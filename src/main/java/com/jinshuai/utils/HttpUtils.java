@@ -1,7 +1,14 @@
 package com.jinshuai.utils;
 
+import org.apache.http.Header;
+import org.apache.http.HeaderElement;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
@@ -9,53 +16,47 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
+import org.apache.http.util.ByteArrayBuffer;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 
 /**
  * @author: JS
  * @date: 2018/3/22
  * @description:
- *  创建一个单例HttpUtils进而创建HttpClient实例。
+ *  创建单例HttpUtils，获取HttpClient实例执行HTTP请求根据状态码解析响应体。
  */
 public class HttpUtils {
 
     private static HttpUtils HTTPUTILS;
 
     private PoolingHttpClientConnectionManager httpClientConnectionManager;
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
     private static final int MAX_TOTAL_CONNECTIONS = 200;
     private static final int MAX_CONNECTIONS_PER_ROUTE = 20;
     private static final int SOCKET_TIMEOUT = 30000;
     private static final int CONNECTION_REQUEST_TIMEOUT = 20000;
     private static final int CONNECT_TIMEOUT = 10000;
-
-    /**
-     * 用户代理
-     * */
-    private static String USER_AGENT[] = {
-            "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
-            "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; SLCC1; .NET CLR 2.0.50727; Media Center PC 5.0; .NET CLR 3.0.04506)",
-            "Mozilla/4.0 (compatible; MSIE 7.0; AOL 9.5; AOLBuild 4337.35; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
-            "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)",
-            "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 2.0.50727; Media Center PC 6.0)",
-            "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 1.0.3705; .NET CLR 1.1.4322)",
-            "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 5.2; .NET CLR 1.1.4322; .NET CLR 2.0.50727; InfoPath.2; .NET CLR 3.0.04506.30)",
-            "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN) AppleWebKit/523.15 (KHTML, like Gecko, Safari/419.3) Arora/0.3 (Change: 287 c9dfb30)",
-            "Mozilla/5.0 (X11; U; Linux; en-US) AppleWebKit/527+ (KHTML, like Gecko, Safari/419.3) Arora/0.6",
-            "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.2pre) Gecko/20070215 K-Ninja/2.1.1",
-            "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9) Gecko/20080705 Firefox/3.0 Kapiko/3.0",
-            "Mozilla/5.0 (X11; Linux i686; U;) Gecko/20070322 Kazehakase/0.4.5",
-            "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko Fedora/1.9.0.8-1.fc10 Kazehakase/0.5.6",
-            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/535.20 (KHTML, like Gecko) Chrome/19.0.1036.7 Safari/535.20",
-            "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52",
-    };
 
     /**
      * 获取HttpUtils单例
@@ -77,6 +78,7 @@ public class HttpUtils {
 
     /**
      * 配置HTTP连接池
+     *
      * */
     private void configHttpPool() {
         try {
@@ -105,21 +107,26 @@ public class HttpUtils {
             SocketConfig socketConfig = SocketConfig.custom().setSoTimeout(SOCKET_TIMEOUT).build();
             httpClientConnectionManager.setDefaultSocketConfig(socketConfig);
         } catch (Exception e) {
-
+            LOGGER.error("SSL位置异常 " + e.getMessage());
         }
     }
 
     /**
-     * 获取httpclient实例
+     * 获取HttpClient
      *
      * */
-    public HttpClient getHttpClient() {
+    private CloseableHttpClient getHttpClient() {
         // 请求配置
-        RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
                 .setConnectTimeout(CONNECT_TIMEOUT)
                 .build();
         // 将配置信息应用到HttpClient
-        CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig)
+        if (httpClientConnectionManager == null) {
+            LOGGER.error("httpClientConnectionManager未被初始化");
+        }
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setDefaultRequestConfig(requestConfig)
                 .setConnectionManager(httpClientConnectionManager)
                 .build();
         return httpClient;
@@ -127,10 +134,158 @@ public class HttpUtils {
 
     /**
      * 发送请求
+     *
      * */
-    public String sendRequest(String URLString) {
-        // TODO:====
-        return null;
+    private HttpEntity sendRequest(final String urlString) {
+        HttpUtils httpUtils = null;
+        CloseableHttpClient httpClient = null;
+        HttpGet httpGet = getHttpGet(urlString);
+        HttpResponse response = null;
+        HttpEntity httpEntity = null;
+        try {
+            httpUtils = HttpUtils.getSingleInstance();
+            httpClient = httpUtils.getHttpClient();
+            response = httpClient.execute(httpGet);
+            // 根据状态码执行不同的操作
+            int statusCode = response.getStatusLine().getStatusCode();
+            switch (statusCode) {
+                case 200:
+                    httpEntity = response.getEntity();
+                    break;
+                case 400:
+                    LOGGER.error("下载400错误代码，请求出现语法错误" + urlString);
+                    break;
+                case 403:
+                    LOGGER.error("下载403错误代码，资源不可用" + urlString);
+                    break;
+                case 404:
+                    LOGGER.error("下载404错误代码，无法找到指定资源地址" + urlString);
+                    break;
+                case 503:
+                    LOGGER.error("下载503错误代码，服务不可用" + urlString);
+                    break;
+                case 504:
+                    LOGGER.error("下载504错误代码，网关超时" + urlString);
+                    break;
+                default:
+                    LOGGER.error("错误代码: " + String.valueOf(statusCode) + " " + urlString);
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return httpEntity;
+    }
+
+    /**
+     * 获取HttpGet实例
+     *
+     * */
+    private HttpGet getHttpGet(final String urlString) {
+        URL url = null;
+        URI uri = null;
+        try {
+            url = new URL(urlString);
+            uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), null);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        HttpGet httpGet = new HttpGet(uri);
+        // 添加请求头header
+        httpGet.addHeader("Accept", "*/*");
+        httpGet.addHeader("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
+        httpGet.addHeader("Connection", "keep-alive");
+        httpGet.addHeader("Accept-Encoding", "gzip, deflate");
+        int randomUserAgent = new Random().nextInt(UserAgentArray.USER_AGENT.length);
+        httpGet.addHeader("User-Agent",UserAgentArray.USER_AGENT[randomUserAgent]);
+
+        return httpGet;
+    }
+
+    /**
+     * 获取 HttpEntity
+     *
+     * */
+    public String getContent(final String urlString) {
+        // url为空或者不是http协议
+        if (urlString == null || !urlString.startsWith("http")) {
+            return null;
+        }
+        // 防止SSL过程中的握手警报 http://dovov.com/ssljava-1-7-0unrecognized_name.html
+        if (urlString.startsWith("https")) {
+            System.setProperty("jsse.enableSNIExtension", "false");
+        }
+        String content = null;
+        try {
+            HttpEntity httpEntity = sendRequest(urlString);
+            if (httpEntity == null) {
+                LOGGER.error("HttpEntity为空");
+                return null;
+            }
+            // 判断返回文件是否是Gzip编码
+            InputStream inputStream = httpEntity.getContent();
+            Header header = httpEntity.getContentEncoding();
+            boolean isGzip = false;
+            for (HeaderElement headerElement : header.getElements()) {
+                if (headerElement.getName().equalsIgnoreCase("gzip")) {
+                    isGzip = true;
+                }
+            }
+            if (isGzip) {
+                inputStream = new GZIPInputStream(inputStream);
+            }
+            content = parseStream(inputStream, httpEntity);
+        } catch (IOException e) {
+            LOGGER.error("获取响应流失败 " + e.getMessage());
+        }
+        return content;
+    }
+
+    /**
+     * 解析响应流
+     *
+     * */
+    private String parseStream(final InputStream inputStream, final HttpEntity httpEntity) {
+        String pageContent = null;
+        // 获取页面编码：1. 从响应头content-type 2. 如果没有则从返回的HTML中获取Meta标签里的编码
+        ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(4096);
+        byte[] tempStore = new byte[4096];
+        int count = 0;
+        try {
+            // read(tempStore) 会重新从零开始存->刷新字节数组 ,并返回读到的字节数量
+            while ((count = inputStream.read(tempStore)) != -1) {
+                byteArrayBuffer.append(tempStore, 0, count);
+            }
+            // Ctrl+C  Ctrl+V https://github.com/xjtushilei/ScriptSpider
+            //根据获取的字符编码转为string类型
+            String charset = null;
+            ContentType contentType = null;
+            contentType = ContentType.getOrDefault(httpEntity);
+            Charset charsets = contentType.getCharset();
+            pageContent = new String(byteArrayBuffer.toByteArray());
+            // 如果响应头中含有content-type字段，直接读取然后设置编码即可。
+            if (null != charsets) {
+                charset = charsets.toString();
+            } else {
+                //发现HttpClient带的功能有问题，这里自己又写了一下。
+                Pattern pattern = Pattern.compile("<head>([\\s\\S]*?)<meta([\\s\\S]*?)charset\\s*=(\")?(.*?)\"");
+                Matcher matcher = pattern.matcher(pageContent.toLowerCase());
+                if (matcher.find()) {
+                    charset = matcher.group(4);
+                } else {
+                    charset = "UTF-8";
+                }
+            }
+            pageContent = new String(byteArrayBuffer.toByteArray(),charset);
+        } catch (IOException e) {
+            LOGGER.error("处理流失败 " + e.getMessage());
+        }
+        return pageContent;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(HttpUtils.getSingleInstance().getContent("http://localhost:8011"));
     }
 
 }

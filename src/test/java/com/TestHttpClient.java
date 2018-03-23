@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author: JS
@@ -35,7 +36,11 @@ public class TestHttpClient{
     private static HttpEntity httpEntity;
 
     public static void main(String[] args) {
-        testGet();
+        String[]str = {"1","2","3","4"};
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            System.out.println(random.nextInt(str.length));
+        }
     }
 
     static void testPost() {
