@@ -1,12 +1,7 @@
 package com.jinshuai.utils;
 
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.config.Registry;
@@ -22,13 +17,13 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.ByteArrayBuffer;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,7 +32,6 @@ import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
 
 /**
  * @author: JS
@@ -223,21 +217,12 @@ public class HttpUtils {
                 LOGGER.error("HttpEntity为空");
                 return null;
             }
-            // 判断返回文件是否是Gzip编码
             InputStream inputStream = httpEntity.getContent();
-            Header header = httpEntity.getContentEncoding();
-            boolean isGzip = false;
-            for (HeaderElement headerElement : header.getElements()) {
-                if (headerElement.getName().equalsIgnoreCase("gzip")) {
-                    isGzip = true;
-                }
-            }
-            if (isGzip) {
-                inputStream = new GZIPInputStream(inputStream);
-            }
             content = parseStream(inputStream, httpEntity);
         } catch (IOException e) {
             LOGGER.error("获取响应流失败 " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
         }
         return content;
     }
@@ -284,8 +269,11 @@ public class HttpUtils {
         return pageContent;
     }
 
+    /**
+     * Test HttpUtils
+     * */
     public static void main(String[] args) {
-        System.out.println(HttpUtils.getSingleInstance().getContent("http://localhost:8011"));
+        System.out.println(HttpUtils.getSingleInstance().getContent("http://etriz.hebut.edu.cn/home.jsp"));
     }
 
 }
