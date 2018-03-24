@@ -10,7 +10,9 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -36,11 +38,7 @@ public class TestHttpClient{
     private static HttpEntity httpEntity;
 
     public static void main(String[] args) {
-        String[]str = {"1","2","3","4"};
-        Random random = new Random();
-        for (int i = 0; i < 10; i++) {
-            System.out.println(random.nextInt(str.length));
-        }
+        testPost();
     }
 
     static void testPost() {

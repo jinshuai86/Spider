@@ -171,7 +171,7 @@ public class HttpUtils {
     }
 
     /**
-     * 获取HttpGet实例
+     * 获取HttpGet
      *
      * */
     private HttpGet getHttpGet(final String urlString) {
