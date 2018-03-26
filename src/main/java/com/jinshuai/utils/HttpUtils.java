@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  */
 public class HttpUtils {
 
-    private static HttpUtils HTTPUTILS;
+    private static volatile HttpUtils HTTPUTILS;
 
     private PoolingHttpClientConnectionManager httpClientConnectionManager;
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
