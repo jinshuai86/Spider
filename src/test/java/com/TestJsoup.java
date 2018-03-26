@@ -7,7 +7,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author: JS
@@ -342,11 +344,36 @@ public class TestJsoup extends TestCase{
                 "</html>");
         Document document1 = null;
         try {
-            document1 = Jsoup.connect("https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%BC%95%E6%93%8E").get();
+            document1 = Jsoup.connect("http://xww.hebut.edu.cn/gdyw/67001.htm").get();
+//            // 标题
+//            Element element = document1.selectFirst("div.sub_articleTitle");
+//            System.out.println(element.getElementsByTag("h2").text());
+//            // 时间
+//            Element element1 = document1.selectFirst("div.sub_articleAuthor");
+//            System.out.println(element1.getElementsByTag("strong").eachText().get(0));
+//            // 正文
+//            Element element2 = document1.selectFirst("div.sub_articleInfo");
+
+            //StringBuilder stringBuilder = new StringBuilder();
+            Set<String> urlSeeds = new HashSet<String>();
+            Iterator iterator = document1.getElementsByTag("a").iterator();
+            while (iterator.hasNext()) {
+                Element element3 = (Element) iterator.next();
+                String href = element3.attr("href").toString();
+                if (href.contains("/") || href.contains("#")) continue;
+                urlSeeds.add("http://xww.hebut.edu.cn/gdyw/" + href);
+                //stringBuilder.append(element3.text());
+            }
+            urlSeeds.remove("index.html");
+            urlSeeds.remove("");
+            urlSeeds.remove("javascript:void(0);");
+            System.out.println(urlSeeds);
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(document1.getElementsByTag("div"));
+        //System.out.println(document1.getElementsByTag("h2"));
 
     }
 
