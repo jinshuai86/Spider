@@ -14,7 +14,7 @@ public class UrlSeed {
     private String url;
     /**
      * 该种子的优先级
-     * 硬编码为5。TODO: 为每一个种子设置合理的优先级
+     * 硬编码为5。TODO: 待为每一个种子设置合理的优先级
      * 因为种子可能太多，用int可能会溢出。
      * */
     private long priority = 5;

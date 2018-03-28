@@ -53,7 +53,7 @@ public class RedisScheduler implements Scheduler {
             String url = urlSeed.getUrl();
             // 此种子已经存在
             if (jedis.sismember(PREFIX_SET, url)) {
-                LOGGER.info(url + "已存在");
+                //LOGGER.info(url + "已存在");
                 return;
             }
             // 添加种子的Url到Set
@@ -69,15 +69,14 @@ public class RedisScheduler implements Scheduler {
             if (urlSeedPriority == 5) {
                 jedis.lpush(PREFIX_QUEUE_DEFAULT, urlSeedToJson);
                 return;
-            }
-            if (urlSeedPriority < 5) {
+            } else {
                 jedis.lpush(PREFIX_QUEUE_LOW, urlSeedToJson);
                 return;
             }
         } catch (Exception e) {
             LOGGER.error("[JedisPushUrl] "  + urlSeed.toString() + " 出现异常：" + e.getMessage());
         } finally {
-            if (jedis != null) jedis.disconnect();
+            if (jedis != null && jedis.isConnected()) jedis.disconnect();
         }
     }
 
@@ -107,7 +106,8 @@ public class RedisScheduler implements Scheduler {
         } catch (Exception e) {
             LOGGER.error("[JedisPop] " + urlSeedToJson + " 出现异常" + e.getStackTrace());
         } finally {
-            if (jedis != null) jedis.disconnect();
+            if (jedis != null && jedis.isConnected())
+                jedis.disconnect();
         }
         return gson.fromJson(urlSeedToJson,UrlSeed.class);
     }

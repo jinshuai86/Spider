@@ -1,3 +1,3 @@
 下载器downloader根据种子调度器scheduler提供的种子UrlSeed进行下载<br>
-解析器parser解析下载器的响应体成一个Page<br>
-保存器saver保存Page
+解析器parser解析下载器的响应体封装成一个Page<br>
+保存器saver持久化保存Page

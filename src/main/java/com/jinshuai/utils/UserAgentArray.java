@@ -5,7 +5,7 @@ package com.jinshuai.utils;
  * @date: 2018/3/23
  * @description:
  *  找的一些用户代理，防止后台限制发多个请求。
- *  TODO: 放在文件中
+ *  TODO: 待放在文件中
  */
 public class UserAgentArray {
 

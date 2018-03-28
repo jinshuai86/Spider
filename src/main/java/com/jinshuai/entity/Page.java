@@ -25,7 +25,7 @@ public class Page {
     /**
      * Page包含的url
      * */
-    private Set<String> urlSeeds;
+    private Set<UrlSeed> urlSeeds;
     /**
      * Page所包含的有用信息
      * */
@@ -54,11 +54,11 @@ public class Page {
         return this;
     }
 
-    public Set<String> getUrlSeeds() {
+    public Set<UrlSeed> getUrlSeeds() {
         return urlSeeds;
     }
 
-    public Page setUrlSeeds(Set<String> urlSeeds) {
+    public Page setUrlSeeds(Set<UrlSeed> urlSeeds) {
         this.urlSeeds = urlSeeds;
         return this;
     }

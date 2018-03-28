@@ -83,7 +83,7 @@ class JedisPoolConfig {
     /**
      * 超时时间
      * */
-    public static int TIMEOUT = 10000;
+    public static int TIMEOUT = 0;
 
     /**
      * 重试次数

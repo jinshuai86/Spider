@@ -1,6 +1,7 @@
 package com.jinshuai.core.downloader.impl;
 
 import com.jinshuai.core.downloader.Downloader;
+import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
 import com.jinshuai.utils.HttpUtils;
 
@@ -12,8 +13,10 @@ import com.jinshuai.utils.HttpUtils;
  */
 public class HttpClientPoolDownloader implements Downloader {
 
-    public String download(UrlSeed urlSeed) {
-        return HttpUtils.getSingleInstance().getContent(urlSeed.getUrl());
+    public Page download(UrlSeed urlSeed) {
+        String html = HttpUtils.getSingleInstance().getContent(urlSeed.getUrl());
+        Page page = new Page(urlSeed, html);
+        return page;
     }
 
 }
