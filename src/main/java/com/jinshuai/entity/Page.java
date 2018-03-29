@@ -31,9 +31,9 @@ public class Page {
      * */
     private Map<String,String> items;
 
-    public Page(UrlSeed urlSeed, String html) {
+    public Page(UrlSeed urlSeed, Document document) {
         this.urlSeed = urlSeed;
-        this.document = Jsoup.parse(html, urlSeed.getUrl());
+        this.document = document;
     }
 
     public UrlSeed getUrlSeed() {
