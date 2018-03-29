@@ -1,0 +1,15 @@
+[2018-03-23 16:26:07.741] [main] ERROR com.jinshuai.utils.HttpUtils : Connect to newsxq.xjtu.edu.cn:80 [newsxq.xjtu.edu.cn/202.117.3.24] failed: connect timed out
+[2018-03-23 16:30:31.795] [main] ERROR com.jinshuai.utils.HttpUtils : Connect to ikc.hebut.edu.cn:80 [ikc.hebut.edu.cn/115.24.160.250] failed: connect timed out
+[2018-03-23 16:34:06.246] [main] ERROR com.jinshuai.utils.HttpUtils : 处理流失败 Socket is closed
+[2018-03-23 16:35:19.006] [main] ERROR com.jinshuai.utils.HttpUtils : 处理流失败 socket closed
+[2018-03-23 18:25:29.862] [main] ERROR com.jinshuai.utils.HttpUtils : Connect to localhost:80 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: connect
+[2018-03-23 18:25:29.865] [main] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-23 18:26:38.850] [main] ERROR com.jinshuai.utils.HttpUtils : Connect to localhost:80 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: connect
+[2018-03-23 18:26:38.858] [main] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-23 18:28:18.522] [main] ERROR com.jinshuai.utils.HttpUtils : 下载503错误代码，服务不可用http://localhost:8011
+[2018-03-23 18:28:18.525] [main] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-23 19:13:40.684] [main] ERROR com.jinshuai.utils.HttpUtils : null
+[2018-03-23 19:14:11.974] [main] ERROR com.jinshuai.utils.HttpUtils : null
+[2018-03-23 19:14:33.112] [main] ERROR com.jinshuai.utils.HttpUtils : null
+[2018-03-23 19:21:11.617] [main] ERROR com.jinshuai.utils.HttpUtils : null
+[2018-03-23 19:23:07.891] [main] ERROR com.jinshuai.utils.HttpUtils : null

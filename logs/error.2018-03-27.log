@@ -1,0 +1,184 @@
+[2018-03-27 20:33:29.800] [pool-2-thread-22] ERROR com.jinshuai.utils.HttpUtils : Timeout waiting for connection from pool
+[2018-03-27 20:33:29.805] [pool-2-thread-22] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:33:30.589] [pool-2-thread-25] ERROR com.jinshuai.utils.HttpUtils : Timeout waiting for connection from pool
+[2018-03-27 20:33:30.589] [pool-2-thread-25] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:33:30.590] [pool-2-thread-23] ERROR com.jinshuai.utils.HttpUtils : Timeout waiting for connection from pool
+[2018-03-27 20:33:30.590] [pool-2-thread-23] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:33:30.593] [pool-2-thread-24] ERROR com.jinshuai.utils.HttpUtils : Timeout waiting for connection from pool
+[2018-03-27 20:33:30.593] [pool-2-thread-24] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:33:30.593] [pool-2-thread-26] ERROR com.jinshuai.utils.HttpUtils : Timeout waiting for connection from pool
+[2018-03-27 20:33:30.593] [pool-2-thread-26] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:47.852] [pool-2-thread-1] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径文件名、目录名或卷标语法不正确。
+[2018-03-27 20:45:48.034] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52539.htm
+[2018-03-27 20:45:48.034] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.049] [pool-2-thread-4] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52540.htm
+[2018-03-27 20:45:48.050] [pool-2-thread-4] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.070] [pool-2-thread-5] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdgs/index.htm
+[2018-03-27 20:45:48.071] [pool-2-thread-5] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.086] [pool-2-thread-2] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径文件名、目录名或卷标语法不正确。
+[2018-03-27 20:45:48.091] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../zhxw/index.htm
+[2018-03-27 20:45:48.092] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.115] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52541.htm
+[2018-03-27 20:45:48.116] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.125] [pool-2-thread-3] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径文件名、目录名或卷标语法不正确。
+[2018-03-27 20:45:48.134] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://www.hebut.edu.cn/
+[2018-03-27 20:45:48.134] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.139] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52542.htm
+[2018-03-27 20:45:48.140] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.140] [pool-2-thread-10] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../tygd/index.htm
+[2018-03-27 20:45:48.140] [pool-2-thread-10] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.140] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdzz/index.htm
+[2018-03-27 20:45:48.140] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.149] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/index.htm
+[2018-03-27 20:45:48.149] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.155] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../mtgd/index.htm
+[2018-03-27 20:45:48.156] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../index.htm
+[2018-03-27 20:45:48.156] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.156] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.167] [pool-2-thread-16] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://hbgydxb.cuepa.cn/
+[2018-03-27 20:45:48.168] [pool-2-thread-16] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 20:45:48.183] [pool-2-thread-12] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径文件名、目录名或卷标语法不正确。
+[2018-03-27 20:45:49.121] [pool-2-thread-18] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径文件名、目录名或卷标语法不正确。
+[2018-03-27 20:45:49.122] [pool-2-thread-17] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径文件名、目录名或卷标语法不正确。
+[2018-03-27 20:48:25.353] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径文件名、目录名或卷标语法不正确。
+[2018-03-27 20:48:41.056] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 20:49:12.443] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 20:49:23.332] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 20:49:50.427] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 20:49:56.618] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 20:50:17.021] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:05:47.186] [pool-2-thread-1] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:08:07.659] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52540.htm
+[2018-03-27 21:08:07.661] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.659] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52541.htm
+[2018-03-27 21:08:07.664] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.697] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52539.htm
+[2018-03-27 21:08:07.697] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.698] [pool-2-thread-7] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../tygd/index.htm
+[2018-03-27 21:08:07.698] [pool-2-thread-7] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.713] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52542.htm
+[2018-03-27 21:08:07.713] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.715] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../mtgd/index.htm
+[2018-03-27 21:08:07.716] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.751] [pool-2-thread-10] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://hbgydxb.cuepa.cn/
+[2018-03-27 21:08:07.751] [pool-2-thread-10] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.756] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../zhxw/index.htm
+[2018-03-27 21:08:07.757] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.769] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/index.htm
+[2018-03-27 21:08:07.769] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.773] [pool-2-thread-12] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://www.hebut.edu.cn/
+[2018-03-27 21:08:07.773] [pool-2-thread-12] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.780] [pool-2-thread-14] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdzz/index.htm
+[2018-03-27 21:08:07.780] [pool-2-thread-14] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.833] [pool-2-thread-15] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:08:07.838] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../index.htm
+[2018-03-27 21:08:07.844] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.855] [pool-2-thread-5] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:08:07.863] [pool-2-thread-5] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdgs/index.htm
+[2018-03-27 21:08:07.863] [pool-2-thread-5] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:08:07.864] [pool-2-thread-2] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:11:53.457] [pool-2-thread-1] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:11:53.786] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52539.htm
+[2018-03-27 21:11:53.786] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.789] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://www.hebut.edu.cn/
+[2018-03-27 21:11:53.789] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.838] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdzz/index.htm
+[2018-03-27 21:11:53.838] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.845] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/index.htm
+[2018-03-27 21:11:53.846] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.854] [pool-2-thread-10] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52540.htm
+[2018-03-27 21:11:53.854] [pool-2-thread-10] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.855] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://hbgydxb.cuepa.cn/
+[2018-03-27 21:11:53.856] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.870] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdgs/index.htm
+[2018-03-27 21:11:53.870] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.872] [pool-2-thread-14] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52542.htm
+[2018-03-27 21:11:53.873] [pool-2-thread-14] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.875] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52541.htm
+[2018-03-27 21:11:53.875] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.876] [pool-2-thread-12] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../tygd/index.htm
+[2018-03-27 21:11:53.877] [pool-2-thread-12] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.877] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../mtgd/index.htm
+[2018-03-27 21:11:53.878] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.889] [pool-2-thread-17] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../index.htm
+[2018-03-27 21:11:53.889] [pool-2-thread-17] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:11:53.890] [pool-2-thread-18] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../zhxw/index.htm
+[2018-03-27 21:11:53.890] [pool-2-thread-18] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:12:37.724] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../index.htm
+[2018-03-27 21:12:37.724] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:14:26.029] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:14:41.259] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:15:27.106] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:16:47.071] [main] ERROR c.jinshuai.core.saver.impl.TextSaver : 检查路径 + 文件名、目录名或卷标语法不正确。
+[2018-03-27 21:25:50.330] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52539.htm
+[2018-03-27 21:25:50.331] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:25:50.338] [pool-2-thread-5] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://hbgydxb.cuepa.cn/
+[2018-03-27 21:25:50.339] [pool-2-thread-5] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:25:50.382] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdzz/index.htm
+[2018-03-27 21:25:50.383] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:25:50.387] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdgs/index.htm
+[2018-03-27 21:25:50.388] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:25:50.389] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://www.hebut.edu.cn/
+[2018-03-27 21:25:50.390] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:25:50.403] [pool-2-thread-10] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../tygd/index.htm
+[2018-03-27 21:25:50.404] [pool-2-thread-10] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:25:50.425] [pool-2-thread-4] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../mtgd/index.htm
+[2018-03-27 21:25:50.425] [pool-2-thread-4] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:25:50.427] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52542.htm
+[2018-03-27 21:25:50.427] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:25:50.431] [pool-2-thread-12] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../index.htm
+[2018-03-27 21:25:50.431] [pool-2-thread-12] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:25:50.437] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52541.htm
+[2018-03-27 21:25:50.437] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.389] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdgs/index.htm
+[2018-03-27 21:28:49.389] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.400] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52541.htm
+[2018-03-27 21:28:49.400] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.404] [pool-2-thread-4] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../zhxw/index.htm
+[2018-03-27 21:28:49.404] [pool-2-thread-4] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.420] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52542.htm
+[2018-03-27 21:28:49.420] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.433] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52540.htm
+[2018-03-27 21:28:49.433] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.436] [pool-2-thread-7] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../tygd/index.htm
+[2018-03-27 21:28:49.437] [pool-2-thread-7] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.440] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52539.htm
+[2018-03-27 21:28:49.440] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.442] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdzz/index.htm
+[2018-03-27 21:28:49.442] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.449] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../mtgd/index.htm
+[2018-03-27 21:28:49.450] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.456] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://www.hebut.edu.cn/
+[2018-03-27 21:28:49.457] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.460] [pool-2-thread-14] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://hbgydxb.cuepa.cn/
+[2018-03-27 21:28:49.461] [pool-2-thread-14] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.472] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/index.htm
+[2018-03-27 21:28:49.472] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:28:49.478] [pool-2-thread-16] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../index.htm
+[2018-03-27 21:28:49.479] [pool-2-thread-16] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.836] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52540.htm
+[2018-03-27 21:35:59.837] [pool-2-thread-2] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.849] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../tygd/index.htm
+[2018-03-27 21:35:59.849] [pool-2-thread-1] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.878] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52542.htm
+[2018-03-27 21:35:59.879] [pool-2-thread-6] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.907] [pool-2-thread-7] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52539.htm
+[2018-03-27 21:35:59.908] [pool-2-thread-7] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.923] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/index.htm
+[2018-03-27 21:35:59.923] [pool-2-thread-8] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.924] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdgs/index.htm
+[2018-03-27 21:35:59.925] [pool-2-thread-9] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.929] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../gdzz/index.htm
+[2018-03-27 21:35:59.929] [pool-2-thread-3] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.943] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://www.hebut.edu.cn/
+[2018-03-27 21:35:59.943] [pool-2-thread-11] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.943] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../spkj/52541.htm
+[2018-03-27 21:35:59.945] [pool-2-thread-13] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.945] [pool-2-thread-12] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../zhxw/index.htm
+[2018-03-27 21:35:59.946] [pool-2-thread-12] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.956] [pool-2-thread-14] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../mtgd/index.htm
+[2018-03-27 21:35:59.956] [pool-2-thread-14] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.956] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : 下载404错误代码，无法找到指定资源地址http://xww.hebut.edu.cn/gdyw/http://hbgydxb.cuepa.cn/
+[2018-03-27 21:35:59.957] [pool-2-thread-15] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
+[2018-03-27 21:35:59.969] [pool-2-thread-17] ERROR com.jinshuai.utils.HttpUtils : 错误代码: 500 http://xww.hebut.edu.cn/gdyw/../index.htm
+[2018-03-27 21:35:59.969] [pool-2-thread-17] ERROR com.jinshuai.utils.HttpUtils : HttpEntity为空
