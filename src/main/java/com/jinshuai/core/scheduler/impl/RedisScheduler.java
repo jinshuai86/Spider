@@ -28,7 +28,6 @@ public class RedisScheduler implements Scheduler {
     private static final String IP = "127.0.0.1";
     private static final int PORT = 6379;
 
-    private static Jedis jedis = JedisUtils.getSingleInstance().getJedis(IP,PORT);
     /**
      * 存放UrlSeed.url
      * */
@@ -49,31 +48,29 @@ public class RedisScheduler implements Scheduler {
      *  添加种子之前需要判断种子是否已经存在。
      * */
     public void push(UrlSeed urlSeed) {
+        Jedis jedis = JedisUtils.getSingleInstance().getJedis(IP,PORT);
         try {
             String url = urlSeed.getUrl();
             // 此种子已经存在
             if (jedis.sismember(PREFIX_SET, url)) {
-                //LOGGER.info(url + "已存在");
-                return;
-            }
-            // 添加种子的Url到Set
-            jedis.sadd(PREFIX_SET, url);
-            // 添加种子序列化后的JSON文本到List
-            Gson gson = new Gson();
-            String urlSeedToJson = gson.toJson(urlSeed);
-            long urlSeedPriority = urlSeed.getPriority();
-            if (urlSeedPriority > 5) {
-                jedis.lpush(PREFIX_QUEUE_HIGH, urlSeedToJson);
-                return;
-            }
-            if (urlSeedPriority == 5) {
-                jedis.lpush(PREFIX_QUEUE_DEFAULT, urlSeedToJson);
                 return;
             } else {
-                jedis.lpush(PREFIX_QUEUE_LOW, urlSeedToJson);
-                return;
+                // 添加种子的Url到Set
+                jedis.sadd(PREFIX_SET, url);
+                // 添加种子序列化后的JSON文本到List
+                Gson gson = new Gson();
+                String urlSeedToJson = gson.toJson(urlSeed);
+                long urlSeedPriority = urlSeed.getPriority();
+                if (urlSeedPriority > 5) {
+                    jedis.lpush(PREFIX_QUEUE_HIGH, urlSeedToJson);
+                } else if (urlSeedPriority == 5) {
+                    jedis.lpush(PREFIX_QUEUE_DEFAULT, urlSeedToJson);
+                } else {
+                    jedis.lpush(PREFIX_QUEUE_LOW, urlSeedToJson);
+                }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("[JedisPushUrl] "  + urlSeed.toString() + " 出现异常：" + e.getMessage());
         } finally {
             if (jedis != null && jedis.isConnected()) jedis.disconnect();
@@ -86,25 +83,22 @@ public class RedisScheduler implements Scheduler {
      *  优先从高优先级别的列表里取种子
      * */
     public UrlSeed pop() {
+        Jedis jedis = JedisUtils.getSingleInstance().getJedis(IP,PORT);
         Gson gson = new Gson();
         String urlSeedToJson = null;
         UrlSeed urlSeed = null;
         try {
             if ((urlSeedToJson = jedis.lpop(PREFIX_QUEUE_HIGH)) != null) {
                 urlSeed = gson.fromJson(urlSeedToJson,UrlSeed.class);
-                jedis.srem("ScriptSpider.set",urlSeed.getUrl());
-                return urlSeed;
             } else if ((urlSeedToJson = jedis.lpop(PREFIX_QUEUE_DEFAULT)) != null) {
                 urlSeed = gson.fromJson(urlSeedToJson,UrlSeed.class);
-                jedis.srem("ScriptSpider.set",urlSeed.getUrl());
-                return urlSeed;
             } else if ((urlSeedToJson = jedis.lpop(PREFIX_QUEUE_LOW)) != null) {
                 urlSeed = gson.fromJson(urlSeedToJson,UrlSeed.class);
-                jedis.srem("ScriptSpider.set",urlSeed.getUrl());
-                return urlSeed;
             }
+            return urlSeed;
         } catch (Exception e) {
-            LOGGER.error("[JedisPop] " + urlSeedToJson + " 出现异常" + e.getStackTrace());
+            e.printStackTrace();
+            LOGGER.error("[JedisPopUrl] " + urlSeedToJson + " 出现异常" + e.getStackTrace());
         } finally {
             if (jedis != null && jedis.isConnected())
                 jedis.disconnect();
@@ -116,7 +110,7 @@ public class RedisScheduler implements Scheduler {
      * test connection
      * */
     public static void main(String[] args) {
-        Jedis jedis = RedisScheduler.jedis;
+        Jedis jedis = JedisUtils.getSingleInstance().getJedis(IP,PORT);
         System.out.println(jedis.ping());
         UrlSeed urlSeed = new RedisScheduler().pop();
         System.out.println(urlSeed);
