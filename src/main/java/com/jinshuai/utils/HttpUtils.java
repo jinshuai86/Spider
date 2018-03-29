@@ -48,8 +48,8 @@ public class HttpUtils {
 
     private static final int MAX_TOTAL_CONNECTIONS = 200;
     private static final int MAX_CONNECTIONS_PER_ROUTE = 20;
-    private static final int SOCKET_TIMEOUT = 30000;
-    private static final int CONNECTION_REQUEST_TIMEOUT = 20000;
+    private static final int SOCKET_TIMEOUT = 10000;
+    private static final int CONNECTION_REQUEST_TIMEOUT = 10000;
     private static final int CONNECT_TIMEOUT = 10000;
 
     /**

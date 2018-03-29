@@ -13,6 +13,7 @@ import com.jinshuai.entity.UrlSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -44,10 +45,12 @@ public class Spider {
     private Scheduler scheduler;
 
     /**
-     * 线程池线程数量
+     * 线程池配置
      * */
-    private int threadPoolSize = 5;
     private ThreadPoolExecutor pool;
+    private static final int CORE_POOL_SIZE = 5;
+    private static final int MAX_POOL_SIZE = 5;
+    private static final long KEEP_ALIVE_TIME = 1500L;
 
     public Spider setDownloader(Downloader downloader) {
         if (downloader == null) {
@@ -90,24 +93,20 @@ public class Spider {
         return this;
     }
 
-    private Spider setThreadPool(int threadPoolSize) {
-        this.threadPoolSize = threadPoolSize;
-        if (threadPoolSize <= 0) {
-            this.threadPoolSize = 5;
-        }
-        pool = new ThreadPoolExecutor(threadPoolSize, threadPoolSize, 1500L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>()); // 用的阻塞队列
+    private Spider setThreadPool(int corePoolSize, int maxPoolSize, long keepAliveTime) {
+        pool = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>());
         return this;
     }
 
     public void run() {
         LOGGER.info("spider start");
-        setThreadPool(5);
+        setThreadPool(CORE_POOL_SIZE,MAX_POOL_SIZE,KEEP_ALIVE_TIME);
         UrlSeed urlSeed = null;
         while (true) {
             LOGGER.info("当前线程池已完成: " + pool.getCompletedTaskCount() +
                     " 运行中：" + pool.getActiveCount() +
-                    " 最大运行: " + pool.getPoolSize() +
+                    " 最大运行: " + pool.getMaximumPoolSize() +
                     " 等待队列: " + pool.getQueue().size());
            urlSeed = scheduler.pop();
            // 种子仓库没有种子并且活跃线程为0(不再解析页面产生新的种子)
@@ -123,13 +122,17 @@ public class Spider {
                    Thread.currentThread().interrupt();
                    LOGGER.error("sleep()异常" + e.getMessage());
                }
-           } else { // 一切正常，分配线程处理种子。
+           } else {
+               // 一切正常，分配线程处理任务，
+               // 如果运行的线程达到了最大数量则接受的任务会进入等待队列，等待线程执行完成后再从队列里取任务
                LOGGER.info("正在处理:" + urlSeed.getUrl() + "  优先级(默认:5):" + urlSeed.getPriority());
+               // 调用线程执行任务
                pool.execute(new SpiderWork(urlSeed));
            }
            // 自定义的任务停止目标//TODO:随便写的--..
            if (pool.getCompletedTaskCount() >= TARGET_TASK_NUMBER && urlSeed ==null && pool.getQueue().size() == 0) {
                pool.shutdown();
+               LOGGER.info("达到目标，强制停止爬虫... ...");
                System.exit(-1);
            }
         }
@@ -146,7 +149,7 @@ public class Spider {
         public void run() {
             LOGGER.info("当前线程池已完成:" + pool.getCompletedTaskCount() +
                     " 运行中：" + pool.getActiveCount() +
-                    " 最大运行: " + pool.getPoolSize() +
+                    " 最大运行: " + pool.getMaximumPoolSize() +
                     " 等待队列: " + pool.getQueue().size());
             Page page = downloader.download(urlSeed);
             parser.parse(page);

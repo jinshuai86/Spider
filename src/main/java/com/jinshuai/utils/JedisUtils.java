@@ -1,10 +1,8 @@
 package com.jinshuai.utils;
 
-import jdk.nashorn.internal.objects.NativeUint8Array;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -78,12 +76,12 @@ class JedisPoolConfig {
     /**
      * 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException；
      * */
-    public static int MAX_WAIT = 10000;
+    public static int MAX_WAIT = 15000;
 
     /**
      * 超时时间
      * */
-    public static int TIMEOUT = 0;
+    public static int TIMEOUT = 10000;
 
     /**
      * 重试次数
