@@ -3,6 +3,7 @@ package com.jinshuai.core.saver.impl;
 import com.jinshuai.core.saver.Saver;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
+import org.jsoup.Jsoup;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -54,7 +55,7 @@ public class TextSaver implements Saver {
     }
 
     public static void main(String[] args) {
-        new TextSaver().save(new Page(new UrlSeed("",5),"HTML").setItems(null));
+        new TextSaver().save(new Page(new UrlSeed("",5), Jsoup.parse("HTML","")).setItems(null));
     }
 
 }
