@@ -25,12 +25,10 @@ public class HttpClientPoolDownloader implements Downloader {
             String html = HttpUtils.getSingleInstance().getContent(urlSeed.getUrl());
             Document document = Jsoup.parse(html, urlSeed.getUrl());
             page = new Page(urlSeed, document);
-            return page;
         } catch (Exception e) {
-            LOGGER.error("下载器处的解析器解析相应文本出错 " + e.getMessage());
-        } finally {
-            return page;
+            LOGGER.error("下载器下载的相应文本获取DOM树失败 " + e.getMessage());
         }
+        return page;
     }
 
 }
