@@ -1,6 +1,6 @@
-#### 单例模式优化（添加volatile）
+#### 单例模式(懒汉式)
     
-    public static volatile HTTPUTILS;
+    private static volatile HTTPUTILS;
     
     public static HttpUtils getSingleInstance() {
         if (HTTPUTILS == null) {
