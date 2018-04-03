@@ -163,6 +163,7 @@ public class Spider {
      * 入口
      * */
     public static void main(String[] args) {
+        new Thread(()->{}).start();
         Spider.build().setDownloader(new HttpClientPoolDownloader())
                 .setParser(new NewsParser())
                 .setSaver(new TextSaver())

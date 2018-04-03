@@ -3,7 +3,6 @@ package com.jinshuai.core.parser.impl;
 import com.jinshuai.core.parser.Parser;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
-import com.sun.xml.internal.ws.message.ProblemActionHeader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
