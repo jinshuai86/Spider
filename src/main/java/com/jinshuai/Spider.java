@@ -13,6 +13,7 @@ import com.jinshuai.entity.UrlSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.monitor.Monitor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -163,7 +164,6 @@ public class Spider {
      * 入口
      * */
     public static void main(String[] args) {
-        new Thread(()->{}).start();
         Spider.build().setDownloader(new HttpClientPoolDownloader())
                 .setParser(new NewsParser())
                 .setSaver(new TextSaver())
