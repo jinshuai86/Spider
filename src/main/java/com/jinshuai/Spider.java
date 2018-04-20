@@ -13,11 +13,8 @@ import com.jinshuai.entity.UrlSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.management.monitor.Monitor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+
 
 /**
  * @author: JS
@@ -46,12 +43,22 @@ public class Spider {
     private Scheduler scheduler;
 
     /**
-     * 线程池配置
+     * 线程池参数配置
      * */
     private ThreadPoolExecutor pool;
     private static final int CORE_POOL_SIZE = 5;
     private static final int MAX_POOL_SIZE = 5;
     private static final long KEEP_ALIVE_TIME = 1500L;
+
+    /**
+     * 任务队列size
+     * */
+    private static final int MAX_QUEUE_SIZE = 100;
+
+    /**
+     * 最多只有MAX_QUEUE_SIZE + MAX_POOL_SIZE个任务并发执行
+     * */
+    private Semaphore semaphore = new Semaphore(MAX_QUEUE_SIZE + MAX_POOL_SIZE);
 
     public Spider setDownloader(Downloader downloader) {
         if (downloader == null) {
@@ -96,46 +103,50 @@ public class Spider {
 
     private Spider setThreadPool(int corePoolSize, int maxPoolSize, long keepAliveTime) {
         pool = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>());
+                new LinkedBlockingQueue<>(MAX_QUEUE_SIZE));
         return this;
     }
 
     public void run() {
-        LOGGER.info("spider start");
+        LOGGER.info("spider starting... ...");
         setThreadPool(CORE_POOL_SIZE,MAX_POOL_SIZE,KEEP_ALIVE_TIME);
         UrlSeed urlSeed = null;
         while (true) {
-            LOGGER.info("当前线程池已完成: " + pool.getCompletedTaskCount() +
-                    " 运行中：" + pool.getActiveCount() +
-                    " 最大运行: " + pool.getMaximumPoolSize() +
-                    " 等待队列: " + pool.getQueue().size());
-           urlSeed = scheduler.pop();
-           // 种子仓库没有种子并且活跃线程为0(不再解析页面产生新的种子)
-           if (urlSeed == null && pool.getActiveCount() == 0) {
-               pool.shutdown();
-               LOGGER.info("spider end");
-               break;
-           } else if (urlSeed == null) { // 线程池中的线程还在完成任务，需要等待
-               LOGGER.info("调度器中已无种子，等待中... ...");
-               try {
-                   Thread.sleep(1000);
-               } catch (InterruptedException e) {
-                   Thread.currentThread().interrupt();
-                   LOGGER.error("sleep()异常" + e.getMessage());
-               }
-           } else {
-               // 一切正常，分配线程处理任务，
-               // 如果运行的线程达到了最大数量则接受的任务会进入等待队列，等待线程执行完成后再从队列里取任务
-               LOGGER.info("正在处理:" + urlSeed.getUrl() + "  优先级(默认:5):" + urlSeed.getPriority());
-               // 调用线程执行任务
-               pool.execute(new SpiderWork(urlSeed));
-           }
-           // 自定义的任务停止目标//TODO:随便写的--..
-           if (pool.getCompletedTaskCount() >= TARGET_TASK_NUMBER && urlSeed ==null && pool.getQueue().size() == 0) {
-               pool.shutdown();
-               LOGGER.info("达到目标，强制停止爬虫... ...");
-               System.exit(-1);
-           }
+            try {
+                LOGGER.info("已完成任务数量: " + pool.getCompletedTaskCount() +
+                        " 运行中线程数量：" + pool.getActiveCount() +
+                        " 最大线程运行数量: " + pool.getMaximumPoolSize() +
+                        " 工作队列任务数量: " + pool.getQueue().size());
+                urlSeed = scheduler.pop();
+                // 种子仓库没有种子并且活跃线程为0(不再解析页面产生新的种子)
+                if (urlSeed == null && pool.getActiveCount() == 0) {
+                    pool.shutdown();
+                    LOGGER.info("spider end... ...");
+                    break;
+                } else if (urlSeed == null) { // 线程池中的线程还在完成任务，需要等待
+                    LOGGER.info("调度器中已无种子，等待中... ...");
+                    Thread.sleep(1000);
+                } else {
+                    // 一切正常，分配线程处理任务，
+                    // 如果运行的线程达到了最大数量则接受的任务会进入等待队列，等待线程执行完成后再从队列里取任务
+                    LOGGER.info("正在处理:" + urlSeed.getUrl() + "  优先级(默认:5):" + urlSeed.getPriority());
+                    // 获取许可
+                    semaphore.acquire();
+                    // 调用线程执行任务
+                    pool.execute(new SpiderWork(urlSeed));
+                }
+                // 自定义的任务停止目标 TODO:随便写的--..
+                if (pool.getCompletedTaskCount() >= TARGET_TASK_NUMBER && urlSeed ==null && pool.getQueue().size() == 0) {
+                    pool.shutdown();
+                    LOGGER.info("达到目标，停止爬虫... ...");
+                }
+            } catch (InterruptedException e) {
+                LOGGER.error("sleep异常 " + e.getMessage());
+            } catch (RejectedExecutionException ree) {
+                LOGGER.error("获取许可异常 " + ree.getMessage());
+                // 需要释放许可
+                semaphore.release();
+            }
         }
     }
 
@@ -148,15 +159,20 @@ public class Spider {
         }
 
         public void run() {
-            LOGGER.info("当前线程池已完成:" + pool.getCompletedTaskCount() +
-                    " 运行中：" + pool.getActiveCount() +
-                    " 最大运行: " + pool.getMaximumPoolSize() +
-                    " 等待队列: " + pool.getQueue().size());
-            Page page = downloader.download(urlSeed);
-            parser.parse(page);
-            // 将新的种子添加到调度器中
-            page.getUrlSeeds().forEach(seed -> scheduler.push(seed));
-            saver.save(page);
+            try {
+                LOGGER.info("已完成任务数量:" + pool.getCompletedTaskCount() +
+                        " 运行中线程数量：" + pool.getActiveCount() +
+                        " 最大线程运行数量: " + pool.getMaximumPoolSize() +
+                        " 工作队列任务数量: " + pool.getQueue().size());
+                Page page = downloader.download(urlSeed);
+                parser.parse(page);
+                // 将新的种子添加到调度器中
+                page.getUrlSeeds().forEach(seed -> scheduler.push(seed));
+                saver.save(page);
+            } finally {
+                // 完成任务，释放许可
+                semaphore.release();
+            }
         }
     }
 
@@ -172,4 +188,6 @@ public class Spider {
                 .run();
     }
 
+    private class MAX_WORKQUEUE_NUMBER {
+    }
 }

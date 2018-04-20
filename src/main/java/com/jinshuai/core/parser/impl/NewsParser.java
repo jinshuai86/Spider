@@ -26,8 +26,9 @@ public class NewsParser implements Parser {
     // TODO: 待优化解析过程
     public Page parse(Page page) {
         // 获取DOM树
-        Document document = page.getDocument();
+        Document document = null;
         try {
+            document = page.getDocument();
             // 种子,并进行预处理
             Set<UrlSeed> urlSeeds = new HashSet<UrlSeed>();
             Iterator seedIterator = document.getElementsByTag("a").iterator();
