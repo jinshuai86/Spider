@@ -188,6 +188,4 @@ public class Spider {
                 .run();
     }
 
-    private class MAX_WORKQUEUE_NUMBER {
-    }
 }
