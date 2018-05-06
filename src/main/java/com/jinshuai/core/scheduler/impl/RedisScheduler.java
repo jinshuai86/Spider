@@ -6,11 +6,13 @@ import com.jinshuai.core.scheduler.Scheduler;
 import com.jinshuai.entity.UrlSeed;
 import com.jinshuai.utils.HttpUtils;
 import com.jinshuai.utils.JedisUtils;
+import com.jinshuai.utils.PropertiesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import java.net.URL;
+import java.util.Properties;
 
 /**
  * @author: JS
@@ -21,12 +23,6 @@ import java.net.URL;
 public class RedisScheduler implements Scheduler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisScheduler.class);
-
-    /**
-     * 套接字 TODO:待写在配置文件中
-     * */
-    private static final String IP = "127.0.0.1";
-    private static final int PORT = 6379;
 
     /**
      * 存放UrlSeed.url
@@ -48,7 +44,7 @@ public class RedisScheduler implements Scheduler {
      *  添加种子之前需要判断种子是否已经存在。
      * */
     public void push(UrlSeed urlSeed) {
-        Jedis jedis = JedisUtils.getSingleInstance().getJedis(IP,PORT);
+        Jedis jedis = JedisUtils.getSingleInstance().getJedis();
         try {
             String url = urlSeed.getUrl();
             // 此种子已经存在
@@ -70,8 +66,7 @@ public class RedisScheduler implements Scheduler {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("[JedisPushUrl] "  + urlSeed.toString() + " 出现异常：" + e.getMessage());
+            LOGGER.error("JedisPushUrl[{}]出错",urlSeed.toString(),e);
         } finally {
             if (jedis != null && jedis.isConnected()) jedis.disconnect();
         }
@@ -83,7 +78,7 @@ public class RedisScheduler implements Scheduler {
      *  优先从高优先级别的列表里取种子
      * */
     public UrlSeed pop() {
-        Jedis jedis = JedisUtils.getSingleInstance().getJedis(IP,PORT);
+        Jedis jedis = JedisUtils.getSingleInstance().getJedis();
         Gson gson = new Gson();
         String urlSeedToJson = null;
         UrlSeed urlSeed = null;
@@ -97,8 +92,7 @@ public class RedisScheduler implements Scheduler {
             }
             return urlSeed;
         } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("[JedisPopUrl] " + urlSeedToJson + " 出现异常" + e.getStackTrace());
+            LOGGER.error("JedisPopUrl {[]}出错",urlSeedToJson.toString(),e);
         } finally {
             if (jedis != null && jedis.isConnected())
                 jedis.disconnect();
@@ -110,7 +104,7 @@ public class RedisScheduler implements Scheduler {
      * test connection
      * */
     public static void main(String[] args) {
-        Jedis jedis = JedisUtils.getSingleInstance().getJedis(IP,PORT);
+        Jedis jedis = JedisUtils.getSingleInstance().getJedis();
         System.out.println(jedis.ping());
         UrlSeed urlSeed = new RedisScheduler().pop();
         System.out.println(urlSeed);

@@ -26,7 +26,7 @@ public class HttpClientPoolDownloader implements Downloader {
             Document document = Jsoup.parse(html, urlSeed.getUrl());
             page = new Page(urlSeed, document);
         } catch (Exception e) {
-            LOGGER.error("下载器下载的相应文本获取DOM树失败 " + e.getMessage());
+            LOGGER.error("下载器下载的相应文本获取DOM树失败",e);
         }
         return page;
     }

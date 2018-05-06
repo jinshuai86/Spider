@@ -141,9 +141,9 @@ public class Spider {
                     LOGGER.info("达到目标，停止爬虫... ...");
                 }
             } catch (InterruptedException e) {
-                LOGGER.error("sleep异常 " + e.getMessage());
+                LOGGER.error("sleep期间出错",e);
             } catch (RejectedExecutionException ree) {
-                LOGGER.error("获取许可异常 " + ree.getMessage());
+                LOGGER.error("获取许可证出错",ree);
                 // 需要释放许可
                 semaphore.release();
             }

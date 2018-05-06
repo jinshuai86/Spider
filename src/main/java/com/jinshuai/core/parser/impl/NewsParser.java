@@ -15,7 +15,7 @@ import java.util.*;
  * @author: JS
  * @date: 2018/3/26
  * @description:
- *  针对新闻类的网页，解析相应内容。
+ *  针对hrbut新闻类的网页，解析相应内容。
  */
 public class NewsParser implements Parser {
 
@@ -59,7 +59,7 @@ public class NewsParser implements Parser {
             items.put("text", stringBuilder.toString());
             page.setItems(items);
         } catch (Exception e) {
-            LOGGER.error("[解析页面] " + page.getUrlSeed().getUrl() + " 出现异常: " + e.getMessage());
+            LOGGER.error("解析页面[{}]出错",page.getUrlSeed().getUrl(),e);
         } finally {
             return page;
         }

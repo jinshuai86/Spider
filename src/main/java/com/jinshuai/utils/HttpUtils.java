@@ -101,7 +101,7 @@ public class HttpUtils {
             SocketConfig socketConfig = SocketConfig.custom().setSoTimeout(SOCKET_TIMEOUT).build();
             httpClientConnectionManager.setDefaultSocketConfig(socketConfig);
         } catch (Exception e) {
-            LOGGER.error("SSL位置异常 " + e.getMessage());
+            LOGGER.error("SSL配置出错",e);
         }
     }
 
@@ -147,25 +147,25 @@ public class HttpUtils {
                     httpEntity = response.getEntity();
                     break;
                 case 400:
-                    LOGGER.error("下载400错误代码，请求出现语法错误" + urlString);
+                    LOGGER.error("下载400错误代码，请求出现语法错误[{}]",urlString);
                     break;
                 case 403:
-                    LOGGER.error("下载403错误代码，资源不可用" + urlString);
+                    LOGGER.error("下载403错误代码，资源不可用[{}]",urlString);
                     break;
                 case 404:
-                    LOGGER.error("下载404错误代码，无法找到指定资源地址" + urlString);
+                    LOGGER.error("下载404错误代码，无法找到指定资源地址[{}]",urlString);
                     break;
                 case 503:
-                    LOGGER.error("下载503错误代码，服务不可用" + urlString);
+                    LOGGER.error("下载503错误代码，服务不可用[{}]",urlString);
                     break;
                 case 504:
-                    LOGGER.error("下载504错误代码，网关超时" + urlString);
+                    LOGGER.error("下载504错误代码，网关超时[{}]",urlString);
                     break;
                 default:
-                    LOGGER.error("错误代码: " + String.valueOf(statusCode) + " " + urlString);
+                    LOGGER.error("错误代码[{}],请求失败[{}]",String.valueOf(statusCode),urlString);
             }
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("IO出错[{}]",e);
         }
         return httpEntity;
     }
@@ -220,7 +220,7 @@ public class HttpUtils {
             InputStream inputStream = httpEntity.getContent();
             content = parseStream(inputStream, httpEntity);
         } catch (IOException e) {
-            LOGGER.error("获取响应流失败 " + e.getMessage());
+            LOGGER.error("获取响应流失败[{}]",e);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
@@ -264,7 +264,7 @@ public class HttpUtils {
             }
             pageContent = new String(byteArrayBuffer.toByteArray(),charset);
         } catch (IOException e) {
-            LOGGER.error("处理流失败 " + e.getMessage());
+            LOGGER.error("处理流失败[{}]",e);
         }
         return pageContent;
     }
