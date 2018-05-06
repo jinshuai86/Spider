@@ -17,19 +17,27 @@ public class JedisUtils {
     /**
      * JedisUtils实例
      * */
-    private static volatile JedisUtils JEDISUTILS;
+    private static volatile JedisUtils jedisUtils;
 
     /**
      * 获取JedisUtils单例
      * */
     public static JedisUtils getSingleInstance() {
-        if (JEDISUTILS == null) {
+        if (jedisUtils == null) {
             synchronized (JedisUtils.class) {
-                JEDISUTILS = new JedisUtils();
+                jedisUtils = new JedisUtils();
             }
         }
-        return JEDISUTILS;
+        return jedisUtils;
     }
+
+    /**
+     * 获取套接字、密码
+     * */
+    private static final String IP = PropertiesUtils.getInstance().get("ip");
+    private static final int PORT = Integer.valueOf(PropertiesUtils.getInstance().get("port"));
+    private static final String PASSWORD = PropertiesUtils.getInstance().get("password");
+
 
     /**
      * 保存若干个jedisPool
@@ -37,7 +45,7 @@ public class JedisUtils {
      * */
     private static Map<String,JedisPool> maps = new ConcurrentHashMap<String, JedisPool>();
 
-    private JedisPool getJedisPool(final String ip, final int port) {
+    private JedisPool getJedisPool(final String ip, final int port,final String password) {
         JedisPool jedisPool = null;
         if (maps.get(ip) == null) {
             redis.clients.jedis.JedisPoolConfig jedisPoolConfig = new redis.clients.jedis.JedisPoolConfig();
@@ -46,6 +54,7 @@ public class JedisUtils {
             jedisPoolConfig.setMaxWaitMillis(JedisPoolConfig.MAX_WAIT);
             //jedisPoolConfig.setTestOnBorrow(true);
             jedisPoolConfig.setTestOnReturn(true);
+            //TODO 未设置密码
             jedisPool = new JedisPool(jedisPoolConfig, ip, port, JedisPoolConfig.TIMEOUT);
         } else {
             jedisPool = maps.get(ip);
@@ -56,8 +65,8 @@ public class JedisUtils {
     /**
      * 从jedisPool中获取jedis
      * */
-    public Jedis getJedis(String ip, int port) {
-        return getJedisPool(ip,port).getResource();
+    public Jedis getJedis() {
+        return getJedisPool(IP,PORT,PASSWORD).getResource();
     }
 
 }
