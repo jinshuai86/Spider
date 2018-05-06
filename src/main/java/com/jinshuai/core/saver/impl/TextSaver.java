@@ -44,7 +44,7 @@ public class TextSaver implements Saver {
             fw.append("[链接] " + page.getUrlSeed().getUrl());
             fw.flush();
         } catch (IOException e) {
-            LOGGER.error("检查路径 + " + e.getMessage());
+            LOGGER.error("存储路径无效",e);
         } finally {
             if (fw != null) try {
                 fw.close();
