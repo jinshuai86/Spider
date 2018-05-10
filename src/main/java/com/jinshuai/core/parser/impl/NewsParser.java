@@ -15,7 +15,7 @@ import java.util.*;
  * @author: JS
  * @date: 2018/3/26
  * @description:
- *  针对hrbut新闻类的网页，解析相应内容。
+ *  针对hebut新闻类的网页，解析相应内容。
  */
 public class NewsParser implements Parser {
 
