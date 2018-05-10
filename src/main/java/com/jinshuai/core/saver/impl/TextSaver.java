@@ -3,6 +3,7 @@ package com.jinshuai.core.saver.impl;
 import com.jinshuai.core.saver.Saver;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
+import com.jinshuai.utils.PropertiesUtils;
 import org.jsoup.Jsoup;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -16,46 +17,61 @@ import java.util.Date;
  * @author: JS
  * @date: 2018/3/27
  * @description:
- *  存储在文本文件中
+ *  存储到txt
  */
 public class TextSaver implements Saver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TextSaver.class);
 
-    public void save(Page page) {
-        if (page == null) return;
-        String parentDir = "F:/HEBUTNews/";
-        File file = new File(parentDir + (new Date().getTime()) + ".txt");
-        boolean isExist = file.getParentFile().exists();
-        if (!file.getParentFile().exists()) {
+    private String parentDir;
+
+    public TextSaver() {
+        init();
+    }
+
+    /**
+     * 初始化文件要存的目录
+     * */
+    private void init() {
+        parentDir = PropertiesUtils.getInstance().get("dir");
+        File file = new File(parentDir);
+        if (!file.exists()) {
             file.mkdirs();
         }
-        FileWriter fw = null;
-        try {
-            file.createNewFile();
-            fw = new FileWriter(file);
+    }
+
+    public void save(Page page) {
+        if (page == null) return;
+        File file = new File(String.format("%s%s.txt",parentDir,new Date().getTime()));
+        try (FileWriter fw = new FileWriter(file)) {
             if (page.getItems() == null) {
                 fw.flush();
                 return;
             }
-            fw.append("[标题] " + page.getItems().get("title") + "\n");
-            fw.append("[日期] " + page.getItems().get("date") + "\n");
-            fw.append("[正文] " + page.getItems().get("text")+ "\n");
-            fw.append("[链接] " + page.getUrlSeed().getUrl());
+            fw.append(String.format("[标题] %s\n",page.getItems().get("title")));
+            fw.append(String.format("[日期] %s\n", page.getItems().get("date")));
+            fw.append(String.format("[正文] %s\n",page.getItems().get("text")));
+            fw.append(String.format("[链接] %s\n",page.getUrlSeed().getUrl()));
             fw.flush();
         } catch (IOException e) {
             LOGGER.error("存储路径无效",e);
-        } finally {
-            if (fw != null) try {
-                fw.close();
-            } catch (IOException e) {
-                LOGGER.error("流关闭失败");
-            }
         }
     }
 
-    public static void main(String[] args) {
-        new TextSaver().save(new Page(new UrlSeed("",5), Jsoup.parse("HTML","")).setItems(null));
+    public static void main(String[] args) throws IOException {
+//        String parentDir = "E:/HEBUTNews/";
+//        File file = new File(parentDir+ (new Date().getTime()) + ".txt");
+//        //file.createNewFile();
+//        if (!file.getParentFile().exists()) {
+//            //file.getParentFile().mkdirs();
+//
+//        }
+//        FileWriter fileWriter = new FileWriter(file);
+//        fileWriter.append("fasdfs");
+//        fileWriter.flush();
+        Saver saver = new TextSaver();
+
+//        new TextSaver().save(new Page(new UrlSeed("",5), Jsoup.parse("HTML","")).setItems(null));
     }
 
 }
