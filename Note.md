@@ -1,10 +1,14 @@
 #### 单例模式(懒汉式)
-    
+
+```
     private static volatile HTTPUTILS;
     
     public static HttpUtils getSingleInstance() {
+        // 是否已经创建了该实例
         if (HTTPUTILS == null) {
+            // 因为是非原子操作，多线程访问修改不安全，要加锁。
             synchronized (HttpUtils.class) {
+                // 防止并发情况下在经过了第一个if以后该线程挂起，另一个线程创建了对象。
                 if (HTTPUTILS == null) {
                     /**
                      * new HttpUtils() 可能会发生指令重排序:
@@ -21,4 +25,14 @@
             }
         }
         return HTTPUTILS;
-    } 
+    }
+```
+### 单例模式(饿汉式)
+
+```
+    private static final HttpUtils HTTPUTILS = new HttpUtils();
+    
+    public static getSingleInstance() {
+        return HTTPUTILS;
+    }
+```
