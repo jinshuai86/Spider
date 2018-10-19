@@ -1,6 +1,5 @@
 package com.jinshuai.entity;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.util.Map;
@@ -18,14 +17,17 @@ public class Page {
      * Page对应的UrlSeed
      * */
     private UrlSeed urlSeed;
+
     /**
      * Page对应的jsoup文档
      * */
     private Document document;
+
     /**
      * Page包含的url
      * */
     private Set<UrlSeed> urlSeeds;
+
     /**
      * Page所包含的有用信息
      * */

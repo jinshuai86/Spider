@@ -1,4 +1,4 @@
-package com.jinshuai.utils;
+package com.jinshuai.util;
 
 /**
  * @author: JS

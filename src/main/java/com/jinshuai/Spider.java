@@ -7,13 +7,16 @@ import com.jinshuai.core.parser.impl.NewsParser;
 import com.jinshuai.core.saver.Saver;
 import com.jinshuai.core.saver.impl.TextSaver;
 import com.jinshuai.core.scheduler.Scheduler;
+import com.jinshuai.core.scheduler.impl.PriorityQueueScheduler;
 import com.jinshuai.core.scheduler.impl.RedisScheduler;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
+import com.jinshuai.util.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 
 /**
@@ -45,7 +48,7 @@ public class Spider {
      * 线程池参数配置
      */
     private ThreadPoolExecutor pool;
-    private static final int CORE_POOL_SIZE = 5;
+    private static final int CORE_POOL_SIZE = 2;
     private static final int MAX_POOL_SIZE = 5;
     private static final long KEEP_ALIVE_TIME = 1500L;
 
@@ -55,7 +58,7 @@ public class Spider {
     private static final int MAX_QUEUE_SIZE = 100;
 
     /**
-     * 最多只有MAX_QUEUE_SIZE + MAX_POOL_SIZE个任务并发执行
+     * 最多只有MAX_QUEUE_SIZE + MAX_POOL_SIZE个任务并发执行 -> 控制任务的提交速率
      */
     private Semaphore semaphore = new Semaphore(MAX_QUEUE_SIZE + MAX_POOL_SIZE);
 
@@ -78,6 +81,10 @@ public class Spider {
     }
 
     private Spider setSaver(Saver saver) {
+        if (saver == null) {
+            LOGGER.error("未设置保存器，启动失败");
+            return null;
+        }
         this.saver = saver;
         return this;
     }
@@ -132,22 +139,23 @@ public class Spider {
                     // 调用线程执行任务
                     pool.execute(new SpiderWork(urlSeed));
                 }
-                // 自定义的任务停止目标 TODO:随便写的--..
+                // 自定义的任务停止目标: 当完成的任务数量达到800 TODO:随便写的--..
                 if (pool.getCompletedTaskCount() >= TARGET_TASK_NUMBER && urlSeed == null && pool.getQueue().size() == 0) {
                     pool.shutdown();
                     LOGGER.info("达到目标，正在停止......");
                 }
             } catch (InterruptedException e) {
-                LOGGER.error("sleep期间出错", e);
+                LOGGER.error("sleep期间中断异常", e);
             } catch (RejectedExecutionException ree) {
-                LOGGER.error("获取许可证出错", ree);
+                LOGGER.error("未获取到信号量的许可证", ree);
+            } finally {
                 // 需要释放许可
                 semaphore.release();
             }
         }
     }
 
-    class SpiderWork implements Runnable {
+    private class SpiderWork implements Runnable {
 
         private UrlSeed urlSeed;
 
@@ -175,10 +183,12 @@ public class Spider {
      * 入口
      */
     public static void main(String[] args) {
-        Spider.build().setDownloader(new HttpClientPoolDownloader())
+        Spider.build()
+                .setDownloader(new HttpClientPoolDownloader())
                 .setParser(new NewsParser())
                 .setSaver(new TextSaver())
-                .setScheduler(new RedisScheduler())
+//                .setScheduler(new RedisScheduler())
+                .setScheduler(new PriorityQueueScheduler())
                 .addUrlSeed(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm", 5))
                 .run();
     }

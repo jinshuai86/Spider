@@ -1,4 +1,4 @@
-package com.jinshuai.utils;
+package com.jinshuai.util;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -94,10 +94,10 @@ public class HttpUtils {
             // 将SSL集成到HttpConnectionManager
             httpClientConnectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
             // 设置HTTP连接池最大连接数
-            httpClientConnectionManager.setMaxTotal(MAX_TOTAL_CONNECTIONS );
+            httpClientConnectionManager.setMaxTotal(MAX_TOTAL_CONNECTIONS);
             // 每个路由最大的连接数
             httpClientConnectionManager.setDefaultMaxPerRoute(MAX_CONNECTIONS_PER_ROUTE);
-            // 设置连接超时时间
+            // 设置socket超时时间
             SocketConfig socketConfig = SocketConfig.custom().setSoTimeout(SOCKET_TIMEOUT).build();
             httpClientConnectionManager.setDefaultSocketConfig(socketConfig);
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class HttpUtils {
     }
 
     /**
-     * 发送请求
+     * 发Get请求
      *
      * */
     private HttpEntity sendRequest(final String urlString) {
@@ -206,7 +206,7 @@ public class HttpUtils {
         if (urlString == null || !urlString.startsWith("http")) {
             return null;
         }
-        // 防止SSL过程中的握手警报 http://dovov.com/ssljava-1-7-0unrecognized_name.html
+        // 防止SSL过程中的握手警报 TODO http://dovov.com/ssljava-1-7-0unrecognized_name.html
         if (urlString.startsWith("https")) {
             System.setProperty("jsse.enableSNIExtension", "false");
         }
@@ -222,7 +222,7 @@ public class HttpUtils {
         } catch (IOException e) {
             LOGGER.error("获取响应流失败[{}]",e);
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("捕获异常[{}]",e);
         }
         return content;
     }
@@ -242,24 +242,21 @@ public class HttpUtils {
             while ((count = inputStream.read(tempStore)) != -1) {
                 byteArrayBuffer.append(tempStore, 0, count);
             }
-            // Ctrl+C  Ctrl+V https://github.com/xjtushilei/ScriptSpider
-            //根据获取的字符编码转为string类型
-            String charset = null;
-            ContentType contentType = null;
-            contentType = ContentType.getOrDefault(httpEntity);
+            // TODO:下面复制粘贴的：https://github.com/xjtushilei/ScriptSpider
+            // 根据获取的字节编码转为String类型
+            String charset = "UTF-8";
+            ContentType contentType = ContentType.getOrDefault(httpEntity);
             Charset charsets = contentType.getCharset();
             pageContent = new String(byteArrayBuffer.toByteArray());
             // 如果响应头中含有content-type字段，直接读取然后设置编码即可。
             if (null != charsets) {
                 charset = charsets.toString();
             } else {
-                //发现HttpClient带的功能有问题，这里自己又写了一下。
+                // 发现HttpClient带的功能有问题，这里自己又写了一下。
                 Pattern pattern = Pattern.compile("<head>([\\s\\S]*?)<meta([\\s\\S]*?)charset\\s*=(\")?(.*?)\"");
                 Matcher matcher = pattern.matcher(pageContent.toLowerCase());
                 if (matcher.find()) {
                     charset = matcher.group(4);
-                } else {
-                    charset = "UTF-8";
                 }
             }
             pageContent = new String(byteArrayBuffer.toByteArray(),charset);
@@ -273,7 +270,9 @@ public class HttpUtils {
      * Test HttpUtils
      * */
     public static void main(String[] args) {
-        System.out.println(HttpUtils.getSingleInstance().getContent("http://etriz.hebut.edu.cn/home.jsp"));
+        String url2 = "http://202.113.112.30";
+//        String url2 = "http://port.patentstar.cn/bns/PtDataSvc.asmx?op=GetPatentData&_strPID=CN105961023A&_PdTpe=CnDesXmlTxt";
+        System.out.println(HttpUtils.getSingleInstance().getContent(url2));
     }
 
 }

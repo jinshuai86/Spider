@@ -4,7 +4,7 @@
     private static volatile HTTPUTILS;
     
     public static HttpUtils getSingleInstance() {
-        // 是否已经创建了该实例
+        // 判断是否已经创建了该实例
         if (HTTPUTILS == null) {
             // 因为是非原子操作，多线程访问修改不安全，要加锁。
             synchronized (HttpUtils.class) {
@@ -14,7 +14,7 @@
                      * new HttpUtils() 可能会发生指令重排序:
                      *   memory = allocate();   //1：分配对象的内存空间
                      *   ctorInstance(memory);  //2：初始化对象
-                     *   HTTPUTILS = memory;     //3：设置instance指向刚分配的内存地址
+                     *   HTTPUTILS = memory;    //3：设置instance指向刚分配的内存地址
                      *   由于2初始化状态比较长，顺序可能会变成1 3 2
                      *   比如： 
                      *     线程1 将HTTPUTILS已经指向内存空间，但此时的对象没初始化。

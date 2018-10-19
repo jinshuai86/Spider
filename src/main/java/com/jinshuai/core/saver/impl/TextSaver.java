@@ -2,9 +2,7 @@ package com.jinshuai.core.saver.impl;
 
 import com.jinshuai.core.saver.Saver;
 import com.jinshuai.entity.Page;
-import com.jinshuai.entity.UrlSeed;
-import com.jinshuai.utils.PropertiesUtils;
-import org.jsoup.Jsoup;
+import com.jinshuai.util.PropertiesUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
