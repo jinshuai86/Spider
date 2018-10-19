@@ -3,6 +3,7 @@
 2. [Jsoup](https://jsoup.org/)：解析响应的内容。
 3. 配置线程池，[Redis](https://redis.io/)缓存URL种子
 4. 持久化解析结果到文本文件
+5. 添加新的种子调度器（优先队列结合布隆过滤器）
 
 # unfinished:
 2. 优化Redis配置，线程池参数配置。并将配置信息写入配置文件
