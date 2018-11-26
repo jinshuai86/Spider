@@ -59,7 +59,7 @@ public class PriorityQueueScheduler implements Scheduler {
     public static void main(String[] args) {
         UrlSeed urlSeed1 = new UrlSeed("123",5);
         UrlSeed urlSeed2 = new UrlSeed("1234",6);
-        UrlSeed urlSeed3 = new UrlSeed("12345",4);
+        UrlSeed urlSeed3 = new UrlSeed("1234",4);
         PriorityQueueScheduler priorityQueueScheduler = new PriorityQueueScheduler();
         priorityQueueScheduler.push(urlSeed1);
         priorityQueueScheduler.push(urlSeed2);

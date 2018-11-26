@@ -36,6 +36,7 @@ public class TextSaver implements Saver {
         if (!file.exists()) {
             file.mkdirs();
         }
+        LOGGER.info("解析后的文件存放位置：[{}]",parentDir);
     }
 
     public void save(Page page) {

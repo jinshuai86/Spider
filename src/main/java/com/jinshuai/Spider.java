@@ -8,15 +8,12 @@ import com.jinshuai.core.saver.Saver;
 import com.jinshuai.core.saver.impl.TextSaver;
 import com.jinshuai.core.scheduler.Scheduler;
 import com.jinshuai.core.scheduler.impl.PriorityQueueScheduler;
-import com.jinshuai.core.scheduler.impl.RedisScheduler;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
-import com.jinshuai.util.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 
 /**
@@ -35,7 +32,7 @@ public class Spider {
     private static final int TARGET_TASK_NUMBER = 800;
     private static final Logger LOGGER = LoggerFactory.getLogger(Spider.class);
 
-    public static Spider build() {
+    private static Spider build() {
         return new Spider();
     }
 
