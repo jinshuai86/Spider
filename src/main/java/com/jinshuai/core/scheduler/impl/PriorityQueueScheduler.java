@@ -19,17 +19,17 @@ public class PriorityQueueScheduler implements Scheduler {
 
     /**
      * 存储种子的优先队列，采用大根堆实现
-     * */
+     */
     private final PriorityQueue<UrlSeed> urlQueue = new PriorityQueue<>(
-            (o1,o2) -> -Long.compare(o1.getPriority(),o2.getPriority())
-        );
+            (o1, o2) -> -Long.compare(o1.getPriority(), o2.getPriority())
+    );
 
     /**
      * 布隆过滤器判断种子是否重复
      * 预定要完成的任务数量是800
-     * 允许0.01的错误率
-     * */
-    private final BloomFilter<String> bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.forName("UTF-8")), 800,0.01);
+     * 允许0.01的错误率P
+     */
+    private final BloomFilter<String> bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charset.forName("UTF-8")), 800, 0.01);
 
     @Override
     public void push(UrlSeed urlSeed) {
@@ -38,24 +38,22 @@ public class PriorityQueueScheduler implements Scheduler {
         if (bloomFilter.mightContain(url)) {
             log.warn("url:[{}]已存在", urlSeed.getUrl());
             return;
-        } else {
-            urlQueue.add(urlSeed);
-            bloomFilter.put(url);
         }
+        urlQueue.add(urlSeed);
+        bloomFilter.put(url);
     }
 
     @Override
     public UrlSeed pop() {
         if (urlQueue.size() == 0) {
             return null;
-        } else {
-            return urlQueue.poll();
         }
+        return urlQueue.poll();
     }
 
     /**
      * test
-     * */
+     */
     public static void main(String[] args) {
         UrlSeed urlSeed1 = new UrlSeed("123",5);
         UrlSeed urlSeed2 = new UrlSeed("1234",6);
