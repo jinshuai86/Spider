@@ -14,12 +14,11 @@ public class UrlSeed {
     private String url;
     /**
      * 该种子的优先级
-     * 硬编码为5。TODO: 为每一个种子设置合理的优先级
-     * 因为种子可能太多，用int可能会溢出。
+     * 硬编码为5,通过时间戳设置优先级
      * */
     private long priority = 5;
 
-    public UrlSeed(String url, int priority) {
+    public UrlSeed(String url, long priority) {
         this.url = url;
         this.priority = priority;
     }

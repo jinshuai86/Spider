@@ -113,7 +113,7 @@ public class Spider {
     private void run() {
         LOGGER.info("爬虫启动......");
         setThreadPool(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE_TIME);
-        UrlSeed urlSeed = null;
+        UrlSeed urlSeed;
         while (true) {
             try {
                 LOGGER.info("已完成任务数量:[{}]，运行中线程数量：[{}]，最大线程运行数量: [{}]，工作队列任务数量：[{}]",

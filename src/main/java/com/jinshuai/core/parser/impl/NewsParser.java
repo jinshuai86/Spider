@@ -1,8 +1,12 @@
 package com.jinshuai.core.parser.impl;
 
+import com.jinshuai.core.downloader.impl.HttpClientPoolDownloader;
 import com.jinshuai.core.parser.Parser;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,6 +21,7 @@ import java.util.*;
  * @description:
  *  针对hebut新闻类的网页，解析相应内容。
  */
+@Slf4j
 public class NewsParser implements Parser {
 
     private static Logger LOGGER = LoggerFactory.getLogger(NewsParser.class);
@@ -26,21 +31,24 @@ public class NewsParser implements Parser {
     // TODO: 待优化解析过程
     public Page parse(Page page) {
         // 获取DOM树
-        Document document = null;
+        Document document;
         try {
             document = page.getDocument();
+            long priority = timestamp2Priority(document);
             // 种子,并进行预处理
-            Set<UrlSeed> urlSeeds = new HashSet<UrlSeed>();
+            Set<UrlSeed> urlSeeds = new HashSet<>();
             Iterator seedIterator = document.getElementsByTag("a").iterator();
             while (seedIterator.hasNext()) {
                 Element element3 = (Element) seedIterator.next();
-                String href = element3.attr("href").toString();
+                String href = element3.attr("href");
                 if (href.contains("http://www.hebut.edu.cn/")|| href.contains("/")  || href.contains("#") || href.contains("index.htm") || href.contains("javascript:void(0);")) continue;
                 if ("http://xww.hebut.edu.cn/".equals(page.getUrlSeed().getUrl())) continue;
-                urlSeeds.add(new UrlSeed("http://xww.hebut.edu.cn/gdyw/" + href, (int) (Math.random() * 10)));
+                urlSeeds.add(new UrlSeed("http://xww.hebut.edu.cn/gdyw/" + href, priority));
             }
             page.setUrlSeeds(urlSeeds);
-            if ("http://xww.hebut.edu.cn/".equals(page.getUrlSeed().getUrl())) {return page;}
+            if ("http://xww.hebut.edu.cn/".equals(page.getUrlSeed().getUrl())) {
+                return page;
+            }
             Map<String, String> items = new HashMap<String, String>(3);
             // 标题
             Element titleElement = document.selectFirst("div.sub_articleTitle");
@@ -65,6 +73,26 @@ public class NewsParser implements Parser {
         }
     }
 
+    /**
+     * 该Page中的url时间戳参考该Page的时间戳计算优先级
+     * */
+    private long timestamp2Priority(Document document) {
+        String date;
+        try {
+            date = document.selectFirst("div.sub_articleAuthor").getElementsByTag("strong").eachText().get(0);
+        } catch (Exception e) {
+            log.error("解析页面异常",e);
+            return 5;
+        }
+        DateTime dateTime = new DateTime(date);
+        // 获取时间戳的差值
+        long v = DateTimeUtils.currentTimeMillis() - dateTime.getMillis();
+        // 换算成天数
+        v /= 86400000;
+        // 发布时间超过10天设置低的优先级：3，10天：5，小于10天：3
+        return v > 10 ? 3 : v == 10 ? 5 : 10;
+    }
+
     private Page getHyperLinkTag(Page page) {
         if (page == null) {
             throw new RuntimeException("page 为空");
@@ -77,7 +105,7 @@ public class NewsParser implements Parser {
             Iterator seedIterator = document.getElementsByTag("a").iterator();
             while (seedIterator.hasNext()) {
                 Element element3 = (Element) seedIterator.next();
-                String href = element3.attr("href").toString();
+                String href = element3.attr("href");
                 if (href.contains("#") || href.contains("index.html") || href.contains("javascript:void(0);")) continue;
                 if (href.startsWith("gdyw") || href.startsWith("zhyw")) {
                     urlSeeds.add(new UrlSeed("http://xww.hebut.edu.cn/" + href,
@@ -94,7 +122,9 @@ public class NewsParser implements Parser {
      * test
      * */
     public static void main(String[] args) {
-        Page page = new Page(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm",5), Jsoup.parse("<html></html>","http://xww.hebut.edu.cn/gdyw/index.htm"));
+        UrlSeed urlSeed = new UrlSeed("http://xww.hebut.edu.cn/gdyw/70772.htm",5);
+        Page page = new HttpClientPoolDownloader().download(urlSeed);
+//        Page page = new Page(new UrlSeed("http://xww.hebut.edu.cn/gdyw/70772.htm",5), Jsoup.parse("<html></html>","http://xww.hebut.edu.cn/gdyw/index.htm"));
         System.out.println(new NewsParser().parse(page));
     }
 }
