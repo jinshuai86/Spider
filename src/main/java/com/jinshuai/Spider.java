@@ -39,8 +39,7 @@ public class Spider {
                 .setParser(new NewsParser())
                 .setSaver(new TextSaver())
 //                .setScheduler(new RedisScheduler())
-                .setScheduler(new PriorityQueueScheduler())
-                .addUrlSeed(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm", 5));
+                .setScheduler(new PriorityQueueScheduler());
     }
 
     private Downloader downloader;
@@ -111,14 +110,14 @@ public class Spider {
         return this;
     }
 
-    private void setThreadPool(int corePoolSize, int maxPoolSize, long keepAliveTime) {
-        pool = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
+    private void setThreadPool() {
+        pool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(MAX_QUEUE_SIZE));
     }
 
     private void run() {
         LOGGER.info("爬虫启动......");
-        setThreadPool(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE_TIME);
+        setThreadPool();
         UrlSeed urlSeed;
         while (true) {
             try {
@@ -186,7 +185,9 @@ public class Spider {
      * 入口
      */
     public static void main(String[] args) {
-        Spider.build().run();
+        Spider.build()
+                .addUrlSeed(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm", 5))
+                .run();
     }
 
 }
