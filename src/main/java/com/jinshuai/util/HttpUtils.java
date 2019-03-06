@@ -150,7 +150,7 @@ public class HttpUtils {
                     LOGGER.error("下载400错误代码，请求出现语法错误[{}]",urlString);
                     break;
                 case 403:
-                    LOGGER.error("下载403错误代码，资源不可用[{}]",urlString);
+                    LOGGER.error("下载403错误代码，资源需要进行授权[{}]",urlString);
                     break;
                 case 404:
                     LOGGER.error("下载404错误代码，无法找到指定资源地址[{}]",urlString);
