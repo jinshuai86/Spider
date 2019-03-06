@@ -34,7 +34,13 @@ public class Spider {
     private static final Logger LOGGER = LoggerFactory.getLogger(Spider.class);
 
     private static Spider build() {
-        return new Spider();
+        return new Spider()
+                .setDownloader(new HttpClientPoolDownloader())
+                .setParser(new NewsParser())
+                .setSaver(new TextSaver())
+//                .setScheduler(new RedisScheduler())
+                .setScheduler(new PriorityQueueScheduler())
+                .addUrlSeed(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm", 5));
     }
 
     private Downloader downloader;
@@ -105,10 +111,9 @@ public class Spider {
         return this;
     }
 
-    private Spider setThreadPool(int corePoolSize, int maxPoolSize, long keepAliveTime) {
+    private void setThreadPool(int corePoolSize, int maxPoolSize, long keepAliveTime) {
         pool = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(MAX_QUEUE_SIZE));
-        return this;
     }
 
     private void run() {
@@ -181,14 +186,7 @@ public class Spider {
      * 入口
      */
     public static void main(String[] args) {
-        Spider.build()
-                .setDownloader(new HttpClientPoolDownloader())
-                .setParser(new NewsParser())
-                .setSaver(new TextSaver())
-//                .setScheduler(new RedisScheduler())
-                .setScheduler(new PriorityQueueScheduler())
-                .addUrlSeed(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm", 5))
-                .run();
+        Spider.build().run();
     }
 
 }
