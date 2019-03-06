@@ -131,10 +131,10 @@ public class HttpUtils {
      *
      * */
     private HttpEntity sendRequest(final String urlString) {
-        HttpUtils httpUtils = null;
-        CloseableHttpClient httpClient = null;
+        HttpUtils httpUtils;
+        CloseableHttpClient httpClient;
         HttpGet httpGet = getHttpGet(urlString);
-        HttpResponse response = null;
+        HttpResponse response;
         HttpEntity httpEntity = null;
         try {
             httpUtils = HttpUtils.getSingleInstance();
@@ -162,7 +162,7 @@ public class HttpUtils {
                     LOGGER.error("下载504错误代码，网关超时[{}]",urlString);
                     break;
                 default:
-                    LOGGER.error("错误代码[{}],请求失败[{}]",String.valueOf(statusCode),urlString);
+                    LOGGER.error("错误代码[{}],请求失败[{}]",statusCode,urlString);
             }
         } catch (IOException e) {
             LOGGER.error("IO出错[{}]",e);

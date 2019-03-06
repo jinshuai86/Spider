@@ -8,6 +8,7 @@ import com.jinshuai.core.saver.Saver;
 import com.jinshuai.core.saver.impl.TextSaver;
 import com.jinshuai.core.scheduler.Scheduler;
 import com.jinshuai.core.scheduler.impl.PriorityQueueScheduler;
+import com.jinshuai.core.scheduler.impl.RedisScheduler;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
 import org.slf4j.Logger;
