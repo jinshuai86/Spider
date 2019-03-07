@@ -1,5 +1,7 @@
 package com.jinshuai.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -13,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *  对Jedis简单的封装
  */
 public class JedisUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JedisUtils.class);
 
     /**
      * JedisUtils实例
@@ -45,19 +49,22 @@ public class JedisUtils {
      * */
     private static Map<String,JedisPool> maps = new ConcurrentHashMap<String, JedisPool>();
 
-    private JedisPool getJedisPool(final String ip, final int port,final String password) {
-        JedisPool jedisPool = null;
-        if (maps.get(ip) == null) {
+    private JedisPool getJedisPool() {
+        JedisPool jedisPool;
+        if (maps.get(IP) == null) {
             redis.clients.jedis.JedisPoolConfig jedisPoolConfig = new redis.clients.jedis.JedisPoolConfig();
             jedisPoolConfig.setMaxTotal(JedisPoolConfig.MAX_ACTIVE);
             jedisPoolConfig.setMaxIdle(JedisPoolConfig.MAX_IDLE);
             jedisPoolConfig.setMaxWaitMillis(JedisPoolConfig.MAX_WAIT);
             //jedisPoolConfig.setTestOnBorrow(true);
             jedisPoolConfig.setTestOnReturn(true);
-            //TODO 未设置密码
-            jedisPool = new JedisPool(jedisPoolConfig, ip, port, JedisPoolConfig.TIMEOUT);
+            // 未设置密码
+            if (PASSWORD == null || PASSWORD.length() == 0) {
+                LOGGER.info("配置文件中未设置Redis密码，请确保Redis服务器不需要密码验证");
+            }
+            jedisPool = new JedisPool(jedisPoolConfig, IP, PORT, JedisPoolConfig.TIMEOUT, PASSWORD);
         } else {
-            jedisPool = maps.get(ip);
+            jedisPool = maps.get(IP);
         }
             return jedisPool;
     }
@@ -66,7 +73,7 @@ public class JedisUtils {
      * 从jedisPool中获取jedis
      * */
     public Jedis getJedis() {
-        return getJedisPool(IP,PORT,PASSWORD).getResource();
+        return getJedisPool().getResource();
     }
 
 }
