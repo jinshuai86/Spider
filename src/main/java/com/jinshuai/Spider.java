@@ -182,7 +182,14 @@ public class Spider {
     }
 
     /**
-     * 入口
+     * Test
+     *
+     * 线程池提交任务流程：
+     * 判断当前活跃的线程数量和corePoolSize的大小关系，如果没达到corePoolSize就会开新的线程执行任务，如果达到了
+     * 判断和工作队列的大小关系，如果工作队列还没有满，将任务放到工作队列中，如果满了
+     * 判断和maximumPoolSize的大小关系，如果没达到maximumPoolSize，就会新开线程执行任务，如果达到了
+     * 回调注册的拒绝策略
+     *
      */
     public static void main(String[] args) {
         Spider.build()

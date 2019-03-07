@@ -17,7 +17,6 @@ public class TestGson {
         Gson gson = new Gson();
         UrlSeed urlSeed = new UrlSeed("http://www.baidu.com",9);
         System.out.println(gson.toJson(urlSeed));
-        System.out.println(5 < 5l);
         try {
             int i = 4/0;
         } catch (Exception e) {

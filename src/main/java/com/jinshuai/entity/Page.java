@@ -1,7 +1,5 @@
 package com.jinshuai.entity;
 
-import lombok.Data;
-import lombok.Getter;
 import org.jsoup.nodes.Document;
 
 import java.util.Map;

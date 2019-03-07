@@ -4,10 +4,8 @@ import com.jinshuai.core.downloader.impl.HttpClientPoolDownloader;
 import com.jinshuai.core.parser.Parser;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
-import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
@@ -21,7 +19,6 @@ import java.util.*;
  * @description:
  *  针对hebut新闻类的网页，解析相应内容。
  */
-@Slf4j
 public class NewsParser implements Parser {
 
     private static Logger LOGGER = LoggerFactory.getLogger(NewsParser.class);
@@ -81,7 +78,7 @@ public class NewsParser implements Parser {
         try {
             date = document.selectFirst("div.sub_articleAuthor").getElementsByTag("strong").eachText().get(0);
         } catch (Exception e) {
-            log.error("解析页面异常",e);
+            LOGGER.error("解析页面异常",e);
             return 5;
         }
         DateTime dateTime = new DateTime(date);
