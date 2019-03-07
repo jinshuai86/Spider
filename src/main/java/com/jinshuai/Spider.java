@@ -37,8 +37,8 @@ public class Spider {
                 .setDownloader(new HttpClientPoolDownloader())
                 .setParser(new NewsParser())
                 .setSaver(new TextSaver())
-                .setScheduler(new RedisScheduler())
-//                .setScheduler(new PriorityQueueScheduler())
+//                .setScheduler(new RedisScheduler())
+                .setScheduler(new PriorityQueueScheduler())
                 .setThreadPool();
     }
 

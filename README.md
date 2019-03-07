@@ -40,6 +40,6 @@ Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认�
 
 ## 操作步骤
 - 修改`application.properties`中存放解析内容的路径`dir`
-- 如果使用`Redis`作为种子调度器(默认使用优先队列)，需要修改`application.properties`中配置的`ip`以及`port`，默认Redis没有使用密码，所以不用管。如果需要密码，需要修改
+- 如果使用`Redis`作为种子调度器(默认使用优先队列)，需要修改`application.properties`中配置的`ip`、`port`和`password`。如果你的Redis不需要密码验证，就不用修改文件里的`password`属性。
 - 默认解析器是解析的[河北工业大学新闻网](http://xww.hebut.edu.cn/gdyw/index.htm)中的新闻，如果需要爬取其它类型的网页，需要重写`Parser.java`接口
 - 运行`Spider.java`

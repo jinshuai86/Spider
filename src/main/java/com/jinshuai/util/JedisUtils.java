@@ -56,13 +56,15 @@ public class JedisUtils {
             jedisPoolConfig.setMaxTotal(JedisPoolConfig.MAX_ACTIVE);
             jedisPoolConfig.setMaxIdle(JedisPoolConfig.MAX_IDLE);
             jedisPoolConfig.setMaxWaitMillis(JedisPoolConfig.MAX_WAIT);
-            //jedisPoolConfig.setTestOnBorrow(true);
             jedisPoolConfig.setTestOnReturn(true);
             // 未设置密码
             if (PASSWORD == null || PASSWORD.length() == 0) {
-                LOGGER.info("配置文件中未设置Redis密码，请确保Redis服务器不需要密码验证");
+                LOGGER.info("配置文件中未设置Redis密码，请确保Redis服务器不需要密码验证!!!");
+                jedisPool = new JedisPool(jedisPoolConfig, IP, PORT, JedisPoolConfig.TIMEOUT);
+            } else {
+                jedisPool = new JedisPool(jedisPoolConfig, IP, PORT, JedisPoolConfig.TIMEOUT, PASSWORD);
             }
-            jedisPool = new JedisPool(jedisPoolConfig, IP, PORT, JedisPoolConfig.TIMEOUT, PASSWORD);
+            maps.put(IP,jedisPool);
         } else {
             jedisPool = maps.get(IP);
         }
@@ -73,7 +75,14 @@ public class JedisUtils {
      * 从jedisPool中获取jedis
      * */
     public Jedis getJedis() {
-        return getJedisPool().getResource();
+        Jedis jedis = null;
+        try {
+            jedis = getJedisPool().getResource();
+        } catch (Exception e) {
+            LOGGER.error("连接Redis失败,检查IP、端口、密码",e);
+            throw e;
+        }
+        return jedis;
     }
 
 }
