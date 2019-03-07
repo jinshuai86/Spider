@@ -175,15 +175,13 @@ public class HttpUtils {
      *
      * */
     private HttpGet getHttpGet(final String urlString) {
-        URL url = null;
+        URL url;
         URI uri = null;
         try {
             url = new URL(urlString);
             uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), null);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        } catch (MalformedURLException | URISyntaxException e) {
+            LOGGER.error("字符串格式不正确[{}]",urlString,e);
         }
         HttpGet httpGet = new HttpGet(uri);
         // 添加请求头header
@@ -236,7 +234,7 @@ public class HttpUtils {
         // 获取页面编码：1. 从响应头content-type 2. 如果没有则从返回的HTML中获取Meta标签里的编码
         ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(4096);
         byte[] tempStore = new byte[4096];
-        int count = 0;
+        int count;
         try {
             // read(tempStore) 会重新从零开始存->刷新字节数组 ,并返回读到的字节数量
             while ((count = inputStream.read(tempStore)) != -1) {
@@ -268,6 +266,10 @@ public class HttpUtils {
 
     /**
      * Test HttpUtils
+     *
+     *  具体逻辑：HttpClient用封装好的HttpGet发送get请求，获取HttpEntity，从HttpEntity中获取响应内容以及响应头
+     *  从响应头charset中获取字符集编码格式，如果响应头中没有编码格式响应头，就从响应内容中解析meta标签获取编码格式
+     *  然后将字节数组按响应头中的编码格式创建字符串
      * */
     public static void main(String[] args) {
         String url2 = "http://202.113.112.30";

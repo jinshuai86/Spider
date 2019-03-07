@@ -135,7 +135,6 @@ public class Spider {
                     Thread.sleep(1000);
                 } else {
                     // 一切正常，分配线程处理任务，
-                    // 如果运行的线程达到了最大数量则接受的任务会进入等待队列，等待线程执行完成后再从队列里取任务
                     LOGGER.info("正在处理:[{}]，优先级(默认5):[{}]", urlSeed.getUrl(), urlSeed.getPriority());
                     // 获取许可
                     semaphore.acquire();
@@ -152,7 +151,7 @@ public class Spider {
             } catch (RejectedExecutionException ree) {
                 LOGGER.error("未获取到信号量的许可证", ree);
             } finally {
-                // 需要释放许可
+                // 释放许可
                 semaphore.release();
             }
         }
