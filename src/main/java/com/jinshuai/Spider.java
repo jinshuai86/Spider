@@ -119,7 +119,7 @@ public class Spider {
 
     private void run() {
         LOGGER.info("爬虫启动......");
-        UrlSeed urlSeed;
+        UrlSeed urlSeed = null;
         while (true) {
             try {
                 LOGGER.info("已完成任务数量:[{}]，运行中线程数量：[{}]，最大线程运行数量: [{}]，工作队列任务数量：[{}]",
@@ -146,10 +146,10 @@ public class Spider {
                     pool.shutdown();
                     LOGGER.info("达到目标，正在停止......");
                 }
-            } catch (InterruptedException e) {
-                LOGGER.error("sleep期间中断异常", e);
+            } catch (InterruptedException ie) {
+                LOGGER.error("当前线程被中断", ie);
             } catch (RejectedExecutionException ree) {
-                LOGGER.error("未获取到信号量的许可证", ree);
+                LOGGER.error("拒绝此次提交的任务[{}]", urlSeed, ree);
             } finally {
                 // 释放许可
                 semaphore.release();
