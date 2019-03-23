@@ -61,4 +61,4 @@ Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认�
 - [ ] 优化解析页面代码
 
 # 参考
-**大量代码和设计思路**参考自[https://github.com/xjtushilei/ScriptSpider](https://github.com/xjtushilei/ScriptSpider)
+- **代码和设计思路**参考自[https://github.com/xjtushilei/ScriptSpider](https://github.com/xjtushilei/ScriptSpider)
