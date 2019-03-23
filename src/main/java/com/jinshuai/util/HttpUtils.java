@@ -147,19 +147,25 @@ public class HttpUtils {
                     httpEntity = response.getEntity();
                     break;
                 case 400:
-                    LOGGER.error("下载400错误代码，请求出现语法错误[{}]",urlString);
+                    LOGGER.error("400，请求出现语法错误[{}]",urlString);
+                    break;
+                case 401:
+                    LOGGER.error("401，资源需要进行认证[{}]",urlString);
                     break;
                 case 403:
-                    LOGGER.error("下载403错误代码，资源需要进行授权[{}]",urlString);
+                    LOGGER.error("403，资源需要进行授权[{}]",urlString);
                     break;
                 case 404:
-                    LOGGER.error("下载404错误代码，无法找到指定资源地址[{}]",urlString);
+                    LOGGER.error("404，无法找到指定资源地址[{}]",urlString);
+                    break;
+                case 502:
+                    LOGGER.error("502，远程服务器出错[{}]",urlString);
                     break;
                 case 503:
-                    LOGGER.error("下载503错误代码，服务不可用[{}]",urlString);
+                    LOGGER.error("503，服务不可用[{}]",urlString);
                     break;
                 case 504:
-                    LOGGER.error("下载504错误代码，网关超时[{}]",urlString);
+                    LOGGER.error("504，网关超时[{}]",urlString);
                     break;
                 default:
                     LOGGER.error("错误代码[{}],请求失败[{}]",statusCode,urlString);
@@ -186,9 +192,8 @@ public class HttpUtils {
         HttpGet httpGet = new HttpGet(uri);
         // 添加请求头header
         httpGet.addHeader("Accept", "*/*");
-        httpGet.addHeader("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
-        httpGet.addHeader("Connection", "keep-alive");
         httpGet.addHeader("Accept-Encoding", "gzip, deflate");
+        httpGet.addHeader("Connection", "keep-alive");
         int randomUserAgent = new Random().nextInt(UserAgentArray.USER_AGENT.length);
         httpGet.addHeader("User-Agent",UserAgentArray.USER_AGENT[randomUserAgent]);
 
@@ -268,7 +273,7 @@ public class HttpUtils {
      * Test HttpUtils
      *
      *  具体逻辑：HttpClient用封装好的HttpGet发送get请求，获取HttpEntity，从HttpEntity中获取响应内容以及响应头
-     *  从响应头charset中获取字符集编码格式，如果响应头中没有编码格式响应头，就从响应内容中解析meta标签获取编码格式
+     *  从响应头Content-Type中获取charset编码格式，如果响应头中没有编码格式响应头，就从响应内容中解析meta标签获取编码格式
      *  然后将字节数组按响应头中的编码格式创建字符串
      * */
     public static void main(String[] args) {
