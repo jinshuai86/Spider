@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author: JS
@@ -16,6 +18,8 @@ import java.util.Properties;
 public class PropertiesUtils {
 
     private Logger LOGGER = LoggerFactory.getLogger(PropertiesUtils.class);
+
+    private Map<String, String> cache = new ConcurrentHashMap<>();
 
     private static volatile PropertiesUtils propertiesUtils;
 
@@ -31,22 +35,31 @@ public class PropertiesUtils {
     }
 
     public String get(String key) {
-        if (key == null) return null;
+        if (key == null)
+            return null;
+        if (cache.get(key) != null) {
+            return cache.get(key);
+        }
         Properties properties = new Properties();
         InputStream inputStream = PropertiesUtils.class.getResourceAsStream("/application.properties");
         try {
             properties.load(inputStream);
         } catch (IOException e) {
-            LOGGER.error("加载文件失败",e);
+            LOGGER.error("加载配置文件[application.properties]失败",e);
         }
-        return properties.getProperty(key);
+        String value = properties.getProperty(key);
+        cache.put(key,value);
+        return value;
     }
 
     public static void main(String[] args) throws IOException {
-        Properties properties = new Properties();
-        InputStream inputStream = PropertiesUtils.class.getResourceAsStream("/application.properties");
-        properties.load(inputStream);
-        System.out.println(properties.getProperty("password"));
+//        Properties properties = new Properties();
+//        InputStream inputStream = PropertiesUtils.class.getResourceAsStream("/application.properties");
+//        properties.load(inputStream);
+//        System.out.println(properties.getProperty("ip"));
+//        System.out.println(properties.getProperty("ip"));
+        System.out.println(PropertiesUtils.getInstance().get("dir"));
+        System.out.println(PropertiesUtils.getInstance().get("dir"));
     }
 
 }
