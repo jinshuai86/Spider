@@ -47,7 +47,7 @@ public class JedisUtils {
      * 保存若干个jedisPool
      * key 为IP+port
      * */
-    private static Map<String,JedisPool> maps = new ConcurrentHashMap<String, JedisPool>();
+    private static Map<String,JedisPool> maps = new ConcurrentHashMap<>();
 
     private JedisPool getJedisPool() {
         JedisPool jedisPool;
