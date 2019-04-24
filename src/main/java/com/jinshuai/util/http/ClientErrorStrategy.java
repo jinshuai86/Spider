@@ -5,5 +5,11 @@ package com.jinshuai.util.http;
  * @date: 2019/4/15
  * @description: 4XX处理策略
  */
-public class ClientErrorStrategy {
+public class ClientErrorStrategy extends StatusCodeStrategy{
+
+    @Override
+    protected void process(String url) {
+
+    }
+
 }

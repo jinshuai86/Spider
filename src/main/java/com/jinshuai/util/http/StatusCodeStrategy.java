@@ -1,4 +1,4 @@
-package com.jinshuai.util;
+package com.jinshuai.util.http;
 
 /**
  * @author: JS
@@ -7,6 +7,6 @@ package com.jinshuai.util;
  */
 public abstract class StatusCodeStrategy {
 
-    protected abstract void process();
+    protected abstract void process(String URL);
 
 }
