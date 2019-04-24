@@ -29,13 +29,13 @@ public class Spider {
     /**
      * 设置爬虫组件：scheduler、downloader、parser、saver、
      */
+    private Scheduler scheduler;
     private Downloader downloader;
     private Parser parser;
     private Saver saver;
-    private Scheduler scheduler;
 
     /**
-     * 目标任务量
+     * 初始目标任务量
      * */
     private int targetTaskNumbers = 800;
 

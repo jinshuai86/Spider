@@ -36,7 +36,7 @@ public class PriorityQueueScheduler implements Scheduler {
         String url = urlSeed.getUrl();
         // 判断url是否已经在种子队列中
         if (bloomFilter.mightContain(url)) {
-            log.warn("url:[{}]已存在", urlSeed.getUrl());
+//            log.warn("url:[{}]已存在", urlSeed.getUrl());
             return;
         }
         urlQueue.add(urlSeed);

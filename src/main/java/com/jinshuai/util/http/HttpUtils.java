@@ -41,10 +41,11 @@ import java.util.regex.Pattern;
  */
 public class HttpUtils {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
+
     private static volatile HttpUtils HTTPUTILS;
 
     private PoolingHttpClientConnectionManager httpClientConnectionManager;
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
     private static final int MAX_TOTAL_CONNECTIONS = 200;
     private static final int MAX_CONNECTIONS_PER_ROUTE = 20;

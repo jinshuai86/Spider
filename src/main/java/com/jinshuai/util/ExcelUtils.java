@@ -23,7 +23,7 @@ public class ExcelUtils implements OfficeUtils<String> {
     public List<String> read() {
         List<String> result = new ArrayList<>();
         try {
-            Workbook wb = WorkbookFactory.create(new File("F:/W020170616379651135432.xls"));
+            Workbook wb = WorkbookFactory.create(new File("F:/XXX.xls"));
             wb.close();
             Sheet sheet = wb.getSheetAt(0);
             for(Iterator rowIterator = sheet.rowIterator(); rowIterator.hasNext();) {

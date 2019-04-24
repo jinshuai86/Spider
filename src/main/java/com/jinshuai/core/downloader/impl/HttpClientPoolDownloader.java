@@ -3,7 +3,7 @@ package com.jinshuai.core.downloader.impl;
 import com.jinshuai.core.downloader.Downloader;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
-import com.jinshuai.util.HttpUtils;
+import com.jinshuai.util.http.HttpUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
