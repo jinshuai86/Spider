@@ -1,12 +1,14 @@
-package com.jinshuai.util;
+package com.jinshuai.util.http;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
+import org.apache.http.*;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -15,6 +17,10 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeaderElementIterator;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.ByteArrayBuffer;
 import org.slf4j.Logger;
@@ -47,9 +53,11 @@ public class HttpUtils {
 
     private PoolingHttpClientConnectionManager httpClientConnectionManager;
 
+    private CloseableHttpClient httpClient;
+
     private static final int MAX_TOTAL_CONNECTIONS = 200;
-    private static final int MAX_CONNECTIONS_PER_ROUTE = 20;
     private static final int SOCKET_TIMEOUT = 10000;
+    private static final int MAX_CONNECTIONS_PER_ROUTE = 20;
     private static final int CONNECTION_REQUEST_TIMEOUT = 10000;
     private static final int CONNECT_TIMEOUT = 10000;
 
@@ -68,7 +76,12 @@ public class HttpUtils {
     }
 
     HttpUtils() {
+        init();
+    }
+
+    private void init() {
         configHttpPool();
+        configHttpClient();
     }
 
     /**
@@ -107,10 +120,10 @@ public class HttpUtils {
     }
 
     /**
-     * 获取HttpClient
+     * 配置HttpClient
      *
      * */
-    private CloseableHttpClient getHttpClient() {
+    private void configHttpClient() {
         // 请求配置
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
@@ -119,28 +132,50 @@ public class HttpUtils {
         // 将配置信息应用到HttpClient
         if (httpClientConnectionManager == null) {
             LOGGER.error("httpClientConnectionManager未被初始化");
+            return;
         }
-        CloseableHttpClient httpClient = HttpClients.custom()
+        httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(requestConfig)
                 .setConnectionManager(httpClientConnectionManager)
                 .build();
-        return httpClient;
+//        return httpClient;
+    }
+
+    /**
+     * 配置HttpGet
+     *
+     * */
+    private HttpGet getHttpGet(String urlString) {
+        URL url;
+        URI uri = null;
+        try {
+            url = new URL(urlString);
+            uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), null);
+        } catch (MalformedURLException | URISyntaxException e) {
+            LOGGER.error("字符串格式不正确[{}]",urlString,e);
+        }
+        HttpGet httpGet = new HttpGet(uri);
+        // 添加请求头header
+        httpGet.addHeader("Accept", "*/*");
+        httpGet.addHeader("Accept-Encoding", "gzip, deflate");
+        httpGet.addHeader("Connection", "keep-alive");
+        int randomUserAgent = new Random().nextInt(UserAgentArray.USER_AGENT.length);
+        httpGet.addHeader("User-Agent",UserAgentArray.USER_AGENT[randomUserAgent]);
+
+        return httpGet;
     }
 
     /**
      * 发Get请求
      *
      * */
-    private HttpEntity sendRequest(final String urlString) {
-        HttpUtils httpUtils;
-        CloseableHttpClient httpClient;
-        HttpGet httpGet = getHttpGet(urlString);
-        HttpResponse response;
+    private HttpEntity sendRequest(String urlString) {
         HttpEntity httpEntity = null;
+        HttpGet httpGet = getHttpGet(urlString);
+//        HttpClient httpClient = getHttpClient();
         try {
-            httpUtils = HttpUtils.getSingleInstance();
-            httpClient = httpUtils.getHttpClient();
-            response = httpClient.execute(httpGet);
+            HttpResponse response = httpClient.execute(httpGet);
+//            Header header = response.getFirstHeader("Location");
             // 根据状态码执行不同的操作
             int statusCode = response.getStatusLine().getStatusCode();
             switch (statusCode) {
@@ -172,45 +207,21 @@ public class HttpUtils {
                     LOGGER.error("错误代码[{}],请求失败[{}]",statusCode,urlString);
             }
         } catch (IOException e) {
-            LOGGER.error("IO出错[{}]",e);
+            LOGGER.error("IO出错[{}]", urlString, e);
         }
         return httpEntity;
-    }
-
-    /**
-     * 获取HttpGet
-     *
-     * */
-    private HttpGet getHttpGet(final String urlString) {
-        URL url;
-        URI uri = null;
-        try {
-            url = new URL(urlString);
-            uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), null);
-        } catch (MalformedURLException | URISyntaxException e) {
-            LOGGER.error("字符串格式不正确[{}]",urlString,e);
-        }
-        HttpGet httpGet = new HttpGet(uri);
-        // 添加请求头header
-        httpGet.addHeader("Accept", "*/*");
-        httpGet.addHeader("Accept-Encoding", "gzip, deflate");
-        httpGet.addHeader("Connection", "keep-alive");
-        int randomUserAgent = new Random().nextInt(UserAgentArray.USER_AGENT.length);
-        httpGet.addHeader("User-Agent",UserAgentArray.USER_AGENT[randomUserAgent]);
-
-        return httpGet;
     }
 
     /**
      * 获取 HttpEntity
      *
      * */
-    public String getContent(final String urlString) {
+    public String getContent(String urlString) {
         // url为空或者不是http协议
         if (urlString == null || !urlString.startsWith("http")) {
             return null;
         }
-        // 防止SSL过程中的握手警报 TODO http://dovov.com/ssljava-1-7-0unrecognized_name.html
+        // 防止SSL过程中的握手警报 http://dovov.com/ssljava-1-7-0unrecognized_name.html
         if (urlString.startsWith("https")) {
             System.setProperty("jsse.enableSNIExtension", "false");
         }
@@ -226,7 +237,7 @@ public class HttpUtils {
         } catch (IOException e) {
             LOGGER.error("获取响应流失败[{}]",e);
         } catch (Exception e) {
-            LOGGER.error("捕获异常[{}]",e);
+            LOGGER.error("获取内容异常[{}]",e);
         }
         return content;
     }
@@ -235,7 +246,7 @@ public class HttpUtils {
      * 解析响应流
      *
      * */
-    private String parseStream(final InputStream inputStream, final HttpEntity httpEntity) {
+    private String parseStream(InputStream inputStream, HttpEntity httpEntity) {
         String pageContent = null;
         // 获取页面编码：1. 从响应头content-type 2. 如果没有则从返回的HTML中获取Meta标签里的编码
         ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(4096);
@@ -277,10 +288,14 @@ public class HttpUtils {
      *  从响应头Content-Type中获取charset编码格式，如果响应头中没有编码格式响应头，就从响应内容中解析meta标签获取编码格式
      *  然后将字节数组按响应头中的编码格式创建字符串
      * */
-    public static void main(String[] args) {
-        String url2 = "http://202.113.112.30";
+    public static void main(String[] args) throws InterruptedException {
+        String url2 = "https://jinshuai86.github.io/about";
 //        String url2 = "http://port.patentstar.cn/bns/PtDataSvc.asmx?op=GetPatentData&_strPID=CN105961023A&_PdTpe=CnDesXmlTxt";
-        System.out.println(HttpUtils.getSingleInstance().getContent(url2));
+        String url3 = "http://xww.hebut.edu.cn/zhxw/72090.htm";
+        for (int i = 0; i < 100; i++) {
+            HttpUtils.getSingleInstance().getContent(url3);
+            Thread.sleep(4000);
+        }
     }
 
 }
