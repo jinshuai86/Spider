@@ -10,12 +10,12 @@ Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认�
 
 # 使用说明
 
-## 开发环境必需软件
+## 开发环境
 - JDK8+
 - Maven3+
 - lombok
 
-## 操作步骤
+## 基础配置
 - 修改`application.properties`中存放解析内容的路径`dir`
 - 如果使用`Redis`作为种子调度器(默认使用优先队列)，需要修改`application.properties`中配置的`ip`、`port`和`password`。如果你的Redis不需要密码验证，就不用修改文件里的`password`属性。
 - 默认解析器是解析的[河北工业大学新闻网](http://xww.hebut.edu.cn/gdyw/index.htm)中的新闻，如果需要爬取其它类型的网页，需要重写`Parser.java`接口以及提供给种子调度器的初始种子
