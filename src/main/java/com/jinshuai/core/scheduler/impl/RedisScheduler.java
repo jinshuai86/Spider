@@ -19,7 +19,7 @@ public class RedisScheduler implements Scheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisScheduler.class);
 
     /**
-     * 存放UrlSeed.url && 进行种子判重
+     * 存放UrlSeed.url hash && 进行种子判重
      * */
     private final static String PREFIX_SET = "ScriptSpider.set";
 
@@ -39,13 +39,10 @@ public class RedisScheduler implements Scheduler {
      * */
     public void push(UrlSeed urlSeed) {
         try (Jedis jedis = JedisUtils.getSingleInstance().getJedis()) {
-            String url = urlSeed.getUrl();
-            // 此种子已经存在
-            if (jedis.sismember(PREFIX_SET, url)) {
-                return;
-            } else {
-                // 添加种子的Url到Set
-                jedis.sadd(PREFIX_SET, url);
+            // 种子不存在
+            if (!jedis.sismember(PREFIX_SET, urlSeed.getUrlHash())) {
+                // 添加种子Url对应的hash到判重Set
+                jedis.sadd(PREFIX_SET, urlSeed.getUrlHash());
                 // 添加种子序列化后的JSON文本到List
                 Gson gson = new Gson();
                 String urlSeedToJson = gson.toJson(urlSeed);
