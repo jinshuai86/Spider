@@ -8,12 +8,13 @@
   <packaging>jar</packaging>
 
   <name>spider</name>
-  <url>http://maven.apache.org</url>
+  <url>https://github.com/jinshuai86/Spider</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-<build>
+
+  <build>
   <plugins>
     <!--  添加编译插件支持jdk1.8 -->
     <plugin>
@@ -54,7 +55,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
     <!--slf4j logback-->
@@ -118,5 +119,12 @@
       <artifactId>joda-time</artifactId>
       <version>2.9.9</version>
     </dependency>
+    <!-- tokenizer -->
+    <dependency>
+      <groupId>org.ansj</groupId>
+      <artifactId>ansj_seg</artifactId>
+      <version>5.1.1</version>
+    </dependency>
   </dependencies>
+
 </project>

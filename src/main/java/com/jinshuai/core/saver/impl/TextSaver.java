@@ -3,6 +3,7 @@ package com.jinshuai.core.saver.impl;
 import com.jinshuai.core.saver.Saver;
 import com.jinshuai.entity.Page;
 import com.jinshuai.util.PropertiesUtils;
+import com.jinshuai.util.hash.PageUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -23,6 +24,10 @@ public class TextSaver implements Saver {
 
     private String parentDir;
 
+    private PageUtils pageUtil = PageUtils.getInstance();
+
+    private PropertiesUtils propertiesUtil = PropertiesUtils.getInstance();
+
     public TextSaver() {
         init();
     }
@@ -40,7 +45,18 @@ public class TextSaver implements Saver {
     }
 
     public void save(Page page) {
-        if (page == null) return;
+        if (page == null) {
+            return;
+        }
+        // 文本相似度检测
+        String similarCheck = propertiesUtil.get("similarCheck");
+        if (similarCheck != null && similarCheck.equalsIgnoreCase("true")) {
+            String title = page.getItems().get("title");
+            String content = page.getItems().get("content");
+            if(pageUtil.exist(title, content)) {
+                LOGGER.info("标题为 [{}] 的相似文章已经存在", title);
+            }
+        }
         File file = new File(String.format("%s%s.txt",parentDir,new Date().getTime()));
         try (FileWriter fw = new FileWriter(file)) {
             if (page.getItems() == null) {
@@ -49,7 +65,7 @@ public class TextSaver implements Saver {
             }
             fw.append(String.format("[标题] %s\n",page.getItems().get("title")));
             fw.append(String.format("[日期] %s\n", page.getItems().get("date")));
-            fw.append(String.format("[正文] %s\n",page.getItems().get("text")));
+            fw.append(String.format("[正文] %s\n",page.getItems().get("content")));
             fw.append(String.format("[链接] %s\n",page.getUrlSeed().getUrl()));
             fw.flush();
         } catch (IOException e) {
