@@ -61,7 +61,7 @@ public class NewsParser implements Parser {
                 Element element3 = (Element) textIterator.next();
                 stringBuilder.append(element3.text());
             }
-            items.put("text", stringBuilder.toString());
+            items.put("content", stringBuilder.toString());
             page.setItems(items);
         } catch (Exception e) {
             LOGGER.error("解析页面[{}]出错",page.getUrlSeed().getUrl(),e);
