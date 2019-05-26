@@ -1,4 +1,6 @@
 # Spider
+[![HitCount](http://hits.dwyl.io/jinshuai86/Spider.svg)](http://hits.dwyl.io/jinshuai86/Spider)
+
 Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认组件。而且用户可以根据需要实现自己的组件  
 - 具体的流程
   - 首先在调度器中添加初始种子，开启线程池。
