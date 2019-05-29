@@ -3,6 +3,7 @@ package com.jinshuai.util.http;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
@@ -11,6 +12,7 @@ import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
@@ -28,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLPeerUnverifiedException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -55,11 +58,13 @@ public class HttpUtils {
 
     private CloseableHttpClient httpClient;
 
-    private static final int MAX_TOTAL_CONNECTIONS = 200;
-    private static final int SOCKET_TIMEOUT = 10000;
-    private static final int MAX_CONNECTIONS_PER_ROUTE = 20;
-    private static final int CONNECTION_REQUEST_TIMEOUT = 10000;
-    private static final int CONNECT_TIMEOUT = 10000;
+    private ThreadLocal<HttpGet> httpGetContainer = new ThreadLocal<>();
+
+    private static final int MAX_TOTAL_CONNECTIONS = 20;
+    private static final int SOCKET_TIMEOUT = 5000;
+    private static final int MAX_CONNECTIONS_PER_ROUTE = 200;
+    private static final int CONNECTION_REQUEST_TIMEOUT = 5000;
+    private static final int CONNECT_TIMEOUT = 5000;
 
     /**
      * 获取HttpUtils单例
@@ -95,7 +100,9 @@ public class HttpUtils {
                     .loadTrustMaterial(null, new TrustSelfSignedStrategy())
                     .build();
 
-            HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+//            HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+            // 关闭域名证书验证
+            HostnameVerifier hostnameVerifier = NoopHostnameVerifier.INSTANCE;
 
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                     sslcontext, hostnameVerifier);
@@ -138,7 +145,6 @@ public class HttpUtils {
                 .setDefaultRequestConfig(requestConfig)
                 .setConnectionManager(httpClientConnectionManager)
                 .build();
-//        return httpClient;
     }
 
     /**
@@ -171,8 +177,7 @@ public class HttpUtils {
      * */
     private HttpEntity sendRequest(String urlString) {
         HttpEntity httpEntity = null;
-        HttpGet httpGet = getHttpGet(urlString);
-//        HttpClient httpClient = getHttpClient();
+        HttpGet httpGet = httpGetContainer.get();
         try {
             HttpResponse response = httpClient.execute(httpGet);
 //            Header header = response.getFirstHeader("Location");
@@ -227,6 +232,7 @@ public class HttpUtils {
         }
         String content = null;
         try {
+            httpGetContainer.set(getHttpGet(urlString));
             HttpEntity httpEntity = sendRequest(urlString);
             if (httpEntity == null) {
                 LOGGER.error("HttpEntity为空");
@@ -235,9 +241,12 @@ public class HttpUtils {
             InputStream inputStream = httpEntity.getContent();
             content = parseStream(inputStream, httpEntity);
         } catch (IOException e) {
-            LOGGER.error("获取响应流失败[{}]",e);
+            LOGGER.error("获取响应流失败", e);
         } catch (Exception e) {
-            LOGGER.error("获取内容异常[{}]",e);
+            LOGGER.error("获取内容异常", e);
+        } finally {
+            httpGetContainer.get().releaseConnection();
+            httpGetContainer.remove();
         }
         return content;
     }
@@ -288,13 +297,16 @@ public class HttpUtils {
      *  从响应头Content-Type中获取charset编码格式，如果响应头中没有编码格式响应头，就从响应内容中解析meta标签获取编码格式
      *  然后将字节数组按响应头中的编码格式创建字符串
      * */
-    public static void main(String[] args) throws InterruptedException {
-        String url2 = "https://jinshuai86.github.io/about";
-//        String url2 = "http://port.patentstar.cn/bns/PtDataSvc.asmx?op=GetPatentData&_strPID=CN105961023A&_PdTpe=CnDesXmlTxt";
-        String url3 = "http://xww.hebut.edu.cn/zhxw/72090.htm";
+    public static void main(String[] args) {
+        String url1 = "https://jinshuai86.github.io/about";
+        String url2 = "http://port.patentstar.cn/bns/PtDataSvc.asmx?op=GetPatentData&_strPID=CN105961023A&_PdTpe=CnDesXmlTxt";
+        String url3 = "https://www.toutiao.com/";
+        String url4 = "http://xww.hebut.edu.cn";
+        String url5 = "http://www.baidu.com";
+        String url7 = "https://www.douban.com";
         for (int i = 0; i < 100; i++) {
-            HttpUtils.getSingleInstance().getContent(url3);
-            Thread.sleep(4000);
+            System.out.println(i + " ============ ");
+            System.out.println(HttpUtils.getSingleInstance().getContent(url3));
         }
     }
 
