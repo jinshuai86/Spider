@@ -36,6 +36,11 @@ public class UrlSeed {
         this.urlHash = String.valueOf(MurmurHash.hash64(url));
     }
 
+    public UrlSeed(String url) {
+        this.url = url;
+        this.urlHash = String.valueOf(MurmurHash.hash64(url));
+    }
+
     public String getUrl() {
         return url;
     }

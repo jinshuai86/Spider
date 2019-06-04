@@ -50,7 +50,7 @@ public class TextSaver implements Saver {
         }
         // 文本相似度检测
         String similarCheck = propertiesUtil.get("similarCheck");
-        if (similarCheck != null && similarCheck.equalsIgnoreCase("true")) {
+        if (similarCheck != null && !similarCheck.trim().equals("") &&similarCheck.equalsIgnoreCase("true")) {
             String title = page.getItems().get("title");
             String content = page.getItems().get("content");
             if(pageUtil.exist(title, content)) {

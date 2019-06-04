@@ -52,13 +52,13 @@ public class HttpUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
+    private static final ThreadLocal<HttpGet> httpGetContainer = new ThreadLocal<>();
+
     private static volatile HttpUtils HTTPUTILS;
 
     private PoolingHttpClientConnectionManager httpClientConnectionManager;
 
     private CloseableHttpClient httpClient;
-
-    private ThreadLocal<HttpGet> httpGetContainer = new ThreadLocal<>();
 
     private static final int MAX_TOTAL_CONNECTIONS = 20;
     private static final int SOCKET_TIMEOUT = 5000;

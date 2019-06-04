@@ -22,13 +22,12 @@ Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认�
 - 修改`application.properties`中存放解析内容的路径`dir`
 - 如果使用`Redis`作为种子调度器(默认使用优先队列)，需要修改`application.properties`中配置的`ip`、`port`和`password`。如果你的Redis不需要密码验证，就不用修改文件里的`password`属性。
 - 默认解析器解析的[河北工业大学新闻网](http://xww.hebut.edu.cn/gdyw/index.htm)中的新闻，如果解析其它类型的网页，需要重写`Parser.java`接口以及提供给种子调度器的初始种子
+- 运行`Spider.java`
 ```Java
         Spider.build()
-                .addUrlSeed(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm", 5))
-                .setTargetTaskNumbers(100)
+                .addUrlSeed(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm"))
                 .run();
 ```
-- 运行`Spider.java`
 
 # 项目结构
 
