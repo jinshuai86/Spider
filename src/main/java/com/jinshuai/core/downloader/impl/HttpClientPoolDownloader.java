@@ -4,6 +4,7 @@ import com.jinshuai.core.downloader.Downloader;
 import com.jinshuai.entity.Page;
 import com.jinshuai.entity.UrlSeed;
 import com.jinshuai.util.http.HttpUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -15,9 +16,8 @@ import org.slf4j.LoggerFactory;
  * @description:
  *  通过Http连接池下载
  */
+@Slf4j
 public class HttpClientPoolDownloader implements Downloader {
-
-    private final Logger LOGGER = LoggerFactory.getLogger(HttpClientPoolDownloader.class);
 
     public Page download(UrlSeed urlSeed) {
         Page page = null;
@@ -26,7 +26,7 @@ public class HttpClientPoolDownloader implements Downloader {
             Document document = Jsoup.parse(html, urlSeed.getUrl());
             page = new Page(urlSeed, document);
         } catch (Exception e) {
-            LOGGER.error("下载器下载的相应文本获取DOM树失败",e);
+            log.error("下载器下载的相应文本获取DOM树失败", e);
         }
         return page;
     }

@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 import com.jinshuai.core.scheduler.Scheduler;
 import com.jinshuai.entity.UrlSeed;
 import com.jinshuai.util.JedisUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -14,9 +13,8 @@ import redis.clients.jedis.Jedis;
  * @description:
  *  将种子存放到Redis
  */
+@Slf4j
 public class RedisScheduler implements Scheduler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RedisScheduler.class);
 
     /**
      * 存放UrlSeed.url hash && 进行种子判重
@@ -56,7 +54,7 @@ public class RedisScheduler implements Scheduler {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("JedisPushUrl[{}]出错",urlSeed.toString(),e);
+            log.error("JedisPushUrl[{}]出错",urlSeed.toString(),e);
         }
     }
 
@@ -80,7 +78,7 @@ public class RedisScheduler implements Scheduler {
             }
             return urlSeed;
         } catch (Exception e) {
-            LOGGER.error("JedisPopUrl [{}]出错", urlSeedToJson, e);
+            log.error("JedisPopUrl [{}]出错", urlSeedToJson, e);
         } finally {
             if (jedis != null && jedis.isConnected())
                 jedis.disconnect();

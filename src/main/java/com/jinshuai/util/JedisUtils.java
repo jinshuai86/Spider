@@ -1,7 +1,6 @@
 package com.jinshuai.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -15,9 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description:
  *  对Jedis简单的封装
  */
+@Slf4j
 public class JedisUtils {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JedisUtils.class);
 
     /**
      * JedisUtils实例
@@ -89,7 +87,7 @@ public class JedisUtils {
             jedisPoolConfig.setTestOnReturn(true);
             // 未设置密码
             if (PASSWORD == null || PASSWORD.length() == 0) {
-                LOGGER.info("配置文件中未设置Redis密码，请确保Redis服务器不需要密码验证!!!");
+                log.info("配置文件中未设置Redis密码，请确保Redis服务器不需要密码验证!!!");
                 jedisPool = new JedisPool(jedisPoolConfig, IP, PORT, TIMEOUT);
             } else {
                 jedisPool = new JedisPool(jedisPoolConfig, IP, PORT, TIMEOUT, PASSWORD);
@@ -108,7 +106,7 @@ public class JedisUtils {
         try {
             jedis = jedisPool.getResource();
         } catch (Exception e) {
-            LOGGER.error("连接Redis失败,检查IP、端口、密码", e);
+            log.error("连接Redis失败,检查IP、端口、密码", e);
         }
         return jedis;
     }

@@ -1,10 +1,10 @@
 package com.jinshuai.util;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,9 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description:
  *  读取配置文件工具类
  */
+@Slf4j
 public class PropertiesUtils {
-
-    private Logger LOGGER = LoggerFactory.getLogger(PropertiesUtils.class);
 
     private Map<String, String> cache = new ConcurrentHashMap<>();
 
@@ -45,7 +44,7 @@ public class PropertiesUtils {
         try {
             properties.load(inputStream);
         } catch (IOException e) {
-            LOGGER.error("加载配置文件[application.properties]失败",e);
+            log.error("加载配置文件[application.properties]失败",e);
         }
         String value = properties.getProperty(key);
         cache.put(key,value);

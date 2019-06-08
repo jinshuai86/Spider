@@ -4,8 +4,7 @@ import com.jinshuai.core.saver.Saver;
 import com.jinshuai.entity.Page;
 import com.jinshuai.util.PropertiesUtils;
 import com.jinshuai.util.hash.PageUtils;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,9 +17,8 @@ import java.util.Date;
  * @description:
  *  存储到txt
  */
+@Slf4j
 public class TextSaver implements Saver {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TextSaver.class);
 
     private String parentDir;
 
@@ -41,7 +39,7 @@ public class TextSaver implements Saver {
         if (!file.exists()) {
             file.mkdirs();
         }
-        LOGGER.info("解析后的文件存放位置：[{}]",parentDir);
+        log.info("解析后的文件存放位置：[{}]",parentDir);
     }
 
     public void save(Page page) {
@@ -54,7 +52,7 @@ public class TextSaver implements Saver {
             String title = page.getItems().get("title");
             String content = page.getItems().get("content");
             if(pageUtil.exist(title, content)) {
-                LOGGER.info("标题为 [{}] 的相似文章已经存在", title);
+                log.info("标题为 [{}] 的相似文章已经存在", title);
             }
         }
         File file = new File(String.format("%s%s.txt",parentDir,new Date().getTime()));
@@ -69,7 +67,7 @@ public class TextSaver implements Saver {
             fw.append(String.format("[链接] %s\n",page.getUrlSeed().getUrl()));
             fw.flush();
         } catch (IOException e) {
-            LOGGER.error("存储路径无效",e);
+            log.error("存储路径无效",e);
         }
     }
 

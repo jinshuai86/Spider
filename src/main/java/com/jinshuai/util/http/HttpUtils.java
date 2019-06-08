@@ -1,5 +1,9 @@
 package com.jinshuai.util.http;
 
+import com.jinshuai.core.scheduler.Scheduler;
+import com.jinshuai.core.scheduler.impl.PriorityQueueScheduler;
+import com.jinshuai.entity.UrlSeed;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -39,6 +43,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Random;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,13 +53,16 @@ import java.util.regex.Pattern;
  * @description:
  *  创建单例HttpUtils，获取HttpClient实例执行HTTP请求根据状态码解析响应体。
  */
+@Slf4j
 public class HttpUtils {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
     private static final ThreadLocal<HttpGet> httpGetContainer = new ThreadLocal<>();
 
+    private static final ThreadLocal<HttpEntity> httpEntityContainer = new ThreadLocal<>();
+
     private static volatile HttpUtils HTTPUTILS;
+
+    private static Scheduler scheduler;
 
     private PoolingHttpClientConnectionManager httpClientConnectionManager;
 
@@ -87,6 +95,7 @@ public class HttpUtils {
     private void init() {
         configHttpPool();
         configHttpClient();
+        scheduler = new PriorityQueueScheduler();
     }
 
     /**
@@ -122,7 +131,7 @@ public class HttpUtils {
             SocketConfig socketConfig = SocketConfig.custom().setSoTimeout(SOCKET_TIMEOUT).build();
             httpClientConnectionManager.setDefaultSocketConfig(socketConfig);
         } catch (Exception e) {
-            LOGGER.error("SSL配置出错",e);
+            log.error("SSL配置出错",e);
         }
     }
 
@@ -138,7 +147,7 @@ public class HttpUtils {
                 .build();
         // 将配置信息应用到HttpClient
         if (httpClientConnectionManager == null) {
-            LOGGER.error("httpClientConnectionManager未被初始化");
+            log.error("httpClientConnectionManager未被初始化");
             return;
         }
         httpClient = HttpClients.custom()
@@ -151,14 +160,14 @@ public class HttpUtils {
      * 配置HttpGet
      *
      * */
-    private HttpGet getHttpGet(String urlString) {
+    private HttpGet getHttpGet(String urlStr) {
         URL url;
         URI uri = null;
         try {
-            url = new URL(urlString);
+            url = new URL(urlStr);
             uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), null);
         } catch (MalformedURLException | URISyntaxException e) {
-            LOGGER.error("字符串格式不正确[{}]",urlString,e);
+            log.error("字符串格式不正确[{}]",urlStr,e);
         }
         HttpGet httpGet = new HttpGet(uri);
         // 添加请求头header
@@ -175,75 +184,59 @@ public class HttpUtils {
      * 发Get请求
      *
      * */
-    private HttpEntity sendRequest(String urlString) {
-        HttpEntity httpEntity = null;
+    private void sendRequest(String urlStr) {
         HttpGet httpGet = httpGetContainer.get();
         try {
             HttpResponse response = httpClient.execute(httpGet);
-//            Header header = response.getFirstHeader("Location");
             // 根据状态码执行不同的操作
             int statusCode = response.getStatusLine().getStatusCode();
-            switch (statusCode) {
-                case 200:
-                    httpEntity = response.getEntity();
+            switch (statusCode / 100) {
+                case 2:
+                    executeStrategy(HttpUtils.SuccessStrategy.getInstance(), urlStr, response);
                     break;
-                case 400:
-                    LOGGER.error("400，请求出现语法错误[{}]",urlString);
+                case 3:
+                    executeStrategy(HttpUtils.RedirectStrategy.getInstance(), urlStr, response);
                     break;
-                case 401:
-                    LOGGER.error("401，资源需要进行认证[{}]",urlString);
+                case 4:
+                    executeStrategy(HttpUtils.ClientErrorStrategy.getInstance(), urlStr, response);
                     break;
-                case 403:
-                    LOGGER.error("403，资源需要进行授权[{}]",urlString);
+                case 5:
+                    executeStrategy(HttpUtils.ServerErrorStrategy.getInstance(), urlStr, response);
                     break;
-                case 404:
-                    LOGGER.error("404，无法找到指定资源地址[{}]",urlString);
-                    break;
-                case 502:
-                    LOGGER.error("502，远程服务器出错[{}]",urlString);
-                    break;
-                case 503:
-                    LOGGER.error("503，服务不可用[{}]",urlString);
-                    break;
-                case 504:
-                    LOGGER.error("504，网关超时[{}]",urlString);
-                    break;
-                default:
-                    LOGGER.error("错误代码[{}],请求失败[{}]",statusCode,urlString);
             }
         } catch (IOException e) {
-            LOGGER.error("IO出错[{}]", urlString, e);
+            log.error("IO出错[{}]", urlStr, e);
         }
-        return httpEntity;
     }
 
     /**
      * 获取 HttpEntity
      *
      * */
-    public String getContent(String urlString) {
+    public String getContent(String urlStr) {
         // url为空或者不是http协议
-        if (urlString == null || !urlString.startsWith("http")) {
+        if (urlStr == null || !urlStr.startsWith("http")) {
             return null;
         }
         // 防止SSL过程中的握手警报 http://dovov.com/ssljava-1-7-0unrecognized_name.html
-        if (urlString.startsWith("https")) {
+        if (urlStr.startsWith("https")) {
             System.setProperty("jsse.enableSNIExtension", "false");
         }
         String content = null;
         try {
-            httpGetContainer.set(getHttpGet(urlString));
-            HttpEntity httpEntity = sendRequest(urlString);
+            httpGetContainer.set(getHttpGet(urlStr));
+            sendRequest(urlStr);
+            HttpEntity httpEntity = httpEntityContainer.get();
             if (httpEntity == null) {
-                LOGGER.error("HttpEntity为空");
+                log.error("HttpEntity为空");
                 return null;
             }
             InputStream inputStream = httpEntity.getContent();
             content = parseStream(inputStream, httpEntity);
         } catch (IOException e) {
-            LOGGER.error("获取响应流失败", e);
+            log.error("获取响应流失败", e);
         } catch (Exception e) {
-            LOGGER.error("获取内容异常", e);
+            log.error("获取内容异常", e);
         } finally {
             httpGetContainer.get().releaseConnection();
             httpGetContainer.remove();
@@ -285,9 +278,113 @@ public class HttpUtils {
             }
             pageContent = new String(byteArrayBuffer.toByteArray(),charset);
         } catch (IOException e) {
-            LOGGER.error("处理流失败[{}]",e);
+            log.error("处理流失败", e);
         }
         return pageContent;
+    }
+
+    /**
+     * 执行具体的策略
+     *
+     * */
+    private void executeStrategy(StatusHandler statusHandler, String url, HttpResponse response) {
+        statusHandler.process(url, response);
+    }
+
+    /**
+     * 2XX 策略
+     * 成功获取响应时对应的执行策略
+     *
+     * */
+    public static class SuccessStrategy implements StatusHandler {
+
+        private static final StatusHandler statusHandler = new SuccessStrategy();
+
+        static StatusHandler getInstance() {
+            return statusHandler;
+        }
+
+        @Override
+        public void process(String url, HttpResponse response) {
+            httpEntityContainer.set(response.getEntity());
+        }
+
+    }
+
+    /**
+     * 3XX 策略
+     * 重定向时对应的执行策略
+     *
+     * */
+    public static class RedirectStrategy implements StatusHandler {
+
+        private static final StatusHandler statusHandler = new RedirectStrategy();
+
+        static StatusHandler getInstance() {
+            return statusHandler;
+        }
+
+        @Override
+        public void process(String url, HttpResponse response) {
+            Header location = response.getFirstHeader("Location");
+            // 将location对应的URL放到仓库中
+            scheduler.push(new UrlSeed(location.getValue(), 5));
+            log.error("301: 资源已被重定向[{}]", url);
+        }
+
+    }
+
+    /**
+     * 4XX 策略
+     * 主要处理需要认证的资源401，需要授权的资源403，以及不存在的资源404
+     * 当请求次数过多以后，就容易报403
+     * 当 401，403时，将资源放到低优先级的队列或者消息队列中，额外处理。 TODO
+     * */
+    public static class ClientErrorStrategy implements StatusHandler {
+
+        private static final StatusHandler statusHandler = new ClientErrorStrategy();
+
+        static StatusHandler getInstance() {
+            return statusHandler;
+        }
+
+        @Override
+        public void process(String url, HttpResponse response) {
+            int status = response.getStatusLine().getStatusCode();
+
+            if (status == 401 || status == 403) {
+                log.error("401: 无权访问此资源[{}]", url);
+            } else if (status == 404) {
+                log.error("404: 请求的资源不存在[{}]", url);
+            }
+        }
+
+    }
+
+    /**
+     * 5XX 策略
+     * 远端服务器出错，应对办法是暂时停止爬虫 TODO
+     * */
+    public static class ServerErrorStrategy implements StatusHandler {
+
+        private static final StatusHandler statusHandler = new ServerErrorStrategy();
+
+        static StatusHandler getInstance() {
+            return statusHandler;
+        }
+
+        @Override
+        public void process(String url, HttpResponse response) {
+            log.error("500: 远端服务器出错[{}]", url);
+            log.info("由于远程服务器出错，爬虫休息 5 秒后，尝试继续执行任务.....");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                log.error("sleep error", e);
+            }
+
+        }
+
     }
 
     /**
