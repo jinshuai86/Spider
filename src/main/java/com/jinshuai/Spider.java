@@ -55,7 +55,7 @@ public class Spider {
     private Spider setScheduler(Scheduler scheduler) {
         if (scheduler == null) {
             log.error("未设置调度器，启动失败");
-            return null;
+            System.exit(-1);
         }
         this.scheduler = scheduler;
         return this;
@@ -64,7 +64,7 @@ public class Spider {
     private Spider setDownloader(Downloader downloader) {
         if (downloader == null) {
             log.error("未设置下载器，启动失败");
-            return null;
+            System.exit(-1);
         }
         this.downloader = downloader;
         return this;
@@ -73,7 +73,7 @@ public class Spider {
     private Spider setParser(Parser parser) {
         if (parser == null) {
             log.error("未设置解析器，启动失败");
-            return null;
+            System.exit(-1);
         }
         this.parser = parser;
         return this;
@@ -82,7 +82,7 @@ public class Spider {
     private Spider setSaver(Saver saver) {
         if (saver == null) {
             log.error("未设置保存器，启动失败");
-            return null;
+            System.exit(-1);
         }
         this.saver = saver;
         return this;
@@ -98,7 +98,7 @@ public class Spider {
     private Spider addUrlSeed(UrlSeed urlSeed) {
         if (urlSeed == null) {
             log.error("未添加初始种子，启动失败");
-            return null;
+            System.exit(-1);
         }
         scheduler.push(urlSeed);
         return this;
@@ -121,6 +121,9 @@ public class Spider {
 
     private void run() {
         log.info("爬虫启动......");
+        Runtime.getRuntime().addShutdownHook(new Thread(()->{
+            pool.shutdown(); // clean resource
+        }));
         UrlSeed urlSeed = null;
         while (true) {
             try {
@@ -149,6 +152,7 @@ public class Spider {
                 log.error("当前线程被中断", ie);
             } catch (RejectedExecutionException ree) {
                 log.error("拒绝此次提交的任务[{}]", urlSeed, ree);
+                semaphore.release();
             }
         }
     }
