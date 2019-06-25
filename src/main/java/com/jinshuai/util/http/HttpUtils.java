@@ -376,9 +376,14 @@ public class HttpUtils {
         @Override
         public void process(String url, HttpResponse response) {
             log.error("500: 远端服务器出错[{}]", url);
-            log.info("由于远程服务器出错，爬虫休息 5 秒后，尝试继续执行任务.....");
+            Header retryAfter = response.getFirstHeader("Retry-After");
+            long waitSeconds = 20;
+            if (retryAfter != null) {
+                waitSeconds = Long.valueOf(retryAfter.getValue());
+            }
+            log.info("由于远程服务器出错，爬虫休息 [{}] 秒后，尝试继续执行任务.....", waitSeconds);
             try {
-                Thread.sleep(5000);
+                Thread.sleep(waitSeconds);
             } catch (InterruptedException e) {
                 log.error("sleep error", e);
             }
@@ -401,9 +406,11 @@ public class HttpUtils {
         String url4 = "http://xww.hebut.edu.cn";
         String url5 = "http://www.baidu.com";
         String url7 = "https://www.douban.com";
-        for (int i = 0; i < 100; i++) {
-            System.out.println(i + " ============ ");
-            System.out.println(HttpUtils.getSingleInstance().getContent(url3));
+        String url8 = "https://baike.baidu.com/item/";
+        String[] arr = {"碳酸铵","硫酸铁", "醋酸钠", "碳酸钙", "氢氧化钠", "硫酸亚铁", "高锰酸钾"};
+        for (int i = 0; i < 2000; i++) {
+//            System.out.println(i + " ============ ");
+            HttpUtils.getSingleInstance().getContent(url8 + arr[i % arr.length]);
         }
     }
 

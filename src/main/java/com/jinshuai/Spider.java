@@ -136,14 +136,10 @@ public class Spider {
                     log.info("种子仓库已无种子，等待中......");
                     Thread.sleep(1000);
                 } else {
-                    // 一切正常，分配线程处理任务，
                     log.info("准备解析URL:[{}]，优先级(默认5):[{}]", urlSeed.getUrl(), urlSeed.getPriority());
-                    // 获取许可
                     semaphore.acquire();
-                    // 调用线程执行任务
                     pool.execute(new SpiderWork(urlSeed));
                 }
-                // 自定义的任务停止目标: 当完成的任务数量达到目标值
                 if (pool.getCompletedTaskCount() >= targetTaskNumbers && urlSeed == null && pool.getQueue().size() == 0) {
                     pool.shutdown();
                     log.info("达到目标，正在停止......");
