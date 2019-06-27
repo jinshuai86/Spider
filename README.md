@@ -32,8 +32,9 @@ Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认�
 # 项目结构
 
 ```Shell
-├── spider                                        // 根目录
-│   ├── logs                                      // 日志文件
+├── logs                                          // 系统日志
+├── spider-consumer                               // 消费模块(消费4XX 3XX状态码对应URL)
+├── spider-core                                   // 爬虫模块
 │   ├── src                                       // 源码
 │   ├── |——main
 │   ├── ├──|——java/com/jinshuai                          
@@ -46,7 +47,7 @@ Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认�
 │   ├── ├──├──|——util                             // 工具
 │   ├── ├──|——resources                           // 资源目录
 │   ├── ├──|——|——application.properties           // 配置文件
-│   ├── |——test                                   // 单元测试
+
 ```
 
 # 进度
@@ -58,6 +59,7 @@ Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认�
 - [x] 添加新的种子调度器（优先队列结合布隆过滤器）
 - [x] 对于Redis调度器，存放url对应的hash进行判重减少空间使用
 - [x] 使用SimHash进行文本相似度检测
+- [x] 将3XX 4XX 5XX状态码对应URL放到消息队列中去消费
 
 ## TODO
 - [ ] 定时解析失败日志，将失败URL重新加入爬取仓库，设置失败次数限制，超过指定次数就放弃。
