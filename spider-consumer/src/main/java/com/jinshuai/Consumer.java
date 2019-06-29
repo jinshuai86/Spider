@@ -25,8 +25,8 @@ import java.util.concurrent.*;
 
 /**
  * @author: JS
- * @date: 2018/3/27
- * @description: 程序启动入口
+ * @date: 2018/06/27
+ * @description: 消费端
  */
 @Slf4j
 public class Consumer {
@@ -42,16 +42,8 @@ public class Consumer {
     /**
      * 线程池参数配置
      */
-    private ThreadPoolExecutor pool;
-    private static final int CORE_POOL_SIZE = 2;
-    private static final int MAX_POOL_SIZE = 5;
-    private static final long KEEP_ALIVE_TIME = 1500L;
-    private static final int MAX_QUEUE_SIZE = 100;
-
-    /**
-     * 最多只有MAX_QUEUE_SIZE + MAX_POOL_SIZE个任务并发执行 -> 控制任务的提交速率
-     */
-    private Semaphore semaphore = new Semaphore(MAX_QUEUE_SIZE + MAX_POOL_SIZE);
+    private ScheduledThreadPoolExecutor pool;
+    private static final int CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
 
     private static final String CHARSET = RemotingHelper.DEFAULT_CHARSET;
 
@@ -92,9 +84,7 @@ public class Consumer {
     }
 
     private Consumer setThreadPool() {
-        pool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(MAX_QUEUE_SIZE));
-
+        pool =  new ScheduledThreadPoolExecutor(CORE_POOL_SIZE);
         return this;
     }
 
@@ -106,17 +96,15 @@ public class Consumer {
             try {
                 if (urlSeed == null) {
 //                    log.info("队列暂无消息，等待中......");
-                    Thread.sleep(1000);
+                    TimeUnit.SECONDS.sleep(1);
                 } else {
                     log.info("准备解析URL:[{}]，优先级(默认5):[{}]", urlSeed.getUrl(), urlSeed.getPriority());
-                    semaphore.acquire();
-                    pool.execute(new ConsumerWork(urlSeed));
+                    pool.scheduleAtFixedRate(new ConsumerWork(urlSeed),10, 20, TimeUnit.SECONDS);
                 }
             } catch (InterruptedException e) {
                 log.error("当前线程被中断", e);
             } catch (RejectedExecutionException e) {
                 log.error("拒绝此次提交的任务[{}]", urlSeed, e);
-                semaphore.release();
             }
         }
     }
@@ -139,7 +127,6 @@ public class Consumer {
                 page.getUrlSeeds().forEach(seed -> scheduler.push(seed));
                 saver.save(page);
             } finally {
-                semaphore.release();
             }
         }
     }
@@ -184,14 +171,7 @@ public class Consumer {
 
     /**
      * Test
-     *
-     * 线程池提交任务流程：
-     * 判断当前活跃的线程数量和corePoolSize的大小关系，如果没达到corePoolSize就会开新的线程执行任务，如果达到了
-     * 判断和工作队列的大小关系，如果工作队列还没有满，将任务放到工作队列中，如果满了
-     * 判断和maximumPoolSize的大小关系，如果没达到maximumPoolSize，就会新开线程执行任务，如果达到了
-     * 回调注册的拒绝策略
-     *
-     */
+     * */
     public static void main(String[] args) {
         Consumer.build()
                 .run();

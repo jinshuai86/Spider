@@ -42,8 +42,8 @@ public class Spider {
      * 线程池参数配置
      */
     private ThreadPoolExecutor pool;
-    private static final int CORE_POOL_SIZE = 2;
-    private static final int MAX_POOL_SIZE = 5;
+    private static final int CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
+    private static final int MAX_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 4;
     private static final long KEEP_ALIVE_TIME = 1500L;
     private static final int MAX_QUEUE_SIZE = 100;
 
@@ -127,7 +127,7 @@ public class Spider {
         UrlSeed urlSeed = null;
         while (true) {
             try {
-                // 种子仓库没有种子并且活跃线程为0(不再解析页面产生新的种子)
+                // the url_store has no url and there is no active thread
                 if ((urlSeed = scheduler.pop()) == null && pool.getActiveCount() == 0) {
                     pool.shutdown();
                     System.exit(-1); //TODO 为了停止生产者，可以改为轮询标志位
@@ -135,7 +135,7 @@ public class Spider {
                     break;
                 } else if (urlSeed == null) {
                     log.info("种子仓库已无种子，等待中......");
-                    Thread.sleep(1000);
+                    TimeUnit.SECONDS.sleep(1);
                 } else {
                     log.info("准备解析URL:[{}]，优先级(默认5):[{}]", urlSeed.getUrl(), urlSeed.getPriority());
                     semaphore.acquire();
@@ -147,7 +147,7 @@ public class Spider {
                     log.info("达到目标，正在停止......");
                 }
             } catch (InterruptedException e) {
-                log.error("当前线程被中断", e);
+                log.error("当前线程被中断", e); //TODO
             } catch (RejectedExecutionException e) {
                 log.error("拒绝此次提交的任务[{}]", urlSeed, e);
                 semaphore.release();
@@ -169,7 +169,7 @@ public class Spider {
                         pool.getCompletedTaskCount(), pool.getActiveCount(), pool.getMaximumPoolSize(), pool.getQueue().size());
                 Page page = downloader.download(urlSeed);
                 parser.parse(page);
-                // 将新的种子添加到调度器中
+                // add new url to scheduler
                 page.getUrlSeeds().forEach(seed -> scheduler.push(seed));
                 saver.save(page);
             } finally {

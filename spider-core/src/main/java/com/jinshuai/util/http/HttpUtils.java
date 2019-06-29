@@ -40,6 +40,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -426,7 +427,7 @@ public class HttpUtils {
             }
             log.info("由于远程服务器出错，爬虫休息 [{}] 秒后，尝试继续执行任务.....", waitSeconds);
             try {
-                Thread.sleep(waitSeconds);
+                TimeUnit.SECONDS.sleep(waitSeconds);
             } catch (InterruptedException e) {
                 log.error("sleep error", e);
             }
