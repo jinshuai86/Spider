@@ -64,11 +64,10 @@ public class RedisScheduler implements Scheduler {
      *  优先从高优先级别的列表里取种子
      * */
     public UrlSeed pop() {
-        Jedis jedis = JedisUtils.getSingleInstance().getJedis();
         Gson gson = new Gson();
         String urlSeedToJson = null;
         UrlSeed urlSeed = null;
-        try {
+        try (Jedis jedis = JedisUtils.getSingleInstance().getJedis()) {
             if ((urlSeedToJson = jedis.lpop(PREFIX_QUEUE_HIGH)) != null) {
                 urlSeed = gson.fromJson(urlSeedToJson,UrlSeed.class);
             } else if ((urlSeedToJson = jedis.lpop(PREFIX_QUEUE_DEFAULT)) != null) {
@@ -79,9 +78,6 @@ public class RedisScheduler implements Scheduler {
             return urlSeed;
         } catch (Exception e) {
             log.error("JedisPopUrl [{}]出错", urlSeedToJson, e);
-        } finally {
-            if (jedis != null && jedis.isConnected())
-                jedis.disconnect();
         }
         return gson.fromJson(urlSeedToJson,UrlSeed.class);
     }

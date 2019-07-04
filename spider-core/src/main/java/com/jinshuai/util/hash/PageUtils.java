@@ -142,7 +142,7 @@ public class PageUtils {
 
     /**
      * 构建倒排索引
-     * <table, {simhash1, simhash2 simhash3...}>
+     * < table, {simhash1, simhash2 simhash3...} >
      *
      * */
     private void constructInvertedIndex(BigInteger fingerprint) {

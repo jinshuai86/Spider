@@ -31,6 +31,7 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLPeerUnverifiedException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -125,9 +126,9 @@ public class HttpUtils {
                     .loadTrustMaterial(null, new TrustSelfSignedStrategy())
                     .build();
 
-//            HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+            HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
             // 关闭域名证书验证
-            HostnameVerifier hostnameVerifier = NoopHostnameVerifier.INSTANCE;
+//            HostnameVerifier hostnameVerifier = NoopHostnameVerifier.INSTANCE;
 
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                     sslcontext, hostnameVerifier);
@@ -308,7 +309,7 @@ public class HttpUtils {
             producer.send(msg, new SendCallback() {
                 @Override
                 public void onSuccess(SendResult sendResult) {
-                    log.info("发送成功[{}]", sendResult);
+                    log.debug("发送成功[{}]", sendResult);
                 }
 
                 @Override
@@ -452,13 +453,14 @@ public class HttpUtils {
         String url7 = "https://www.douban.com";
         String url8 = "https://baike.baidu.com/item/";
         String[] arr = {"碳酸铵","硫酸铁", "醋酸钠", "碳酸钙", "氢氧化钠", "硫酸亚铁", "高锰酸钾"};
-        for (int i = 0; i < 10; i++) {
-            HttpUtils.getSingleInstance().sendMessage("https://www.douban.com", "Forbidden-Topic");
-        }
-        //        for (int i = 0; i < 2000; i++) {
-////            System.out.println(i + " ============ ");
-//            HttpUtils.getSingleInstance().getContent(url8 + arr[i % arr.length]);
+//        for (int i = 0; i < 10; i++) {
+//            HttpUtils.getSingleInstance().sendMessage("https://www.douban.com", "Forbidden-Topic");
 //        }
+        for (int i = 0; i < 2; i++) {
+//            System.out.println(i + " ============ ");
+//            HttpUtils.getSingleInstance().getContent(url8 + arr[i % arr.length]);
+            System.out.println(HttpUtils.getSingleInstance().getContent(url3));
+        }
     }
 
 }

@@ -36,7 +36,7 @@ public class Spider {
     /**
      * 初始目标任务量
      * */
-    private long targetTaskNumbers = Long.MAX_VALUE;
+    private static long targetTaskNumbers = 800;
 
     /**
      * 线程池参数配置
@@ -113,10 +113,10 @@ public class Spider {
                     log.error("无效的目标任务数量:[{}]", targetTaskNumbers);
                 }
             } catch (Exception e) {
-                log.error("无效的目标任务数量:[{}]", configTargetNum, e);
+                log.error("无效的目标任务数量:[{}]，使用默认值", configTargetNum, e);
             }
         }
-        return targetTaskNumbers > 0 ? this : null;
+        return this;
     }
 
     private void run() {
@@ -128,10 +128,10 @@ public class Spider {
         while (true) {
             try {
                 // the url_store has no url and there is no active thread
-                if ((urlSeed = scheduler.pop()) == null && pool.getActiveCount() == 0) {
+                if ((urlSeed = scheduler.pop()) == null && pool.getActiveCount() == 0 && pool.getQueue().size() == 0) {
                     pool.shutdown();
-                    System.exit(-1); //TODO 为了停止生产者，可以改为轮询标志位
                     log.info("解析完毕，正在停止......");
+                    System.exit(-1); //TODO 为了停止生产者，可以改为轮询标志位
                     break;
                 } else if (urlSeed == null) {
                     log.info("种子仓库已无种子，等待中......");
@@ -143,8 +143,8 @@ public class Spider {
                 }
                 if (pool.getCompletedTaskCount() >= targetTaskNumbers && urlSeed == null && pool.getQueue().size() == 0) {
                     pool.shutdown();
-                    System.exit(-1); //TODO 为了停止生产者，可以改为轮询标志位
                     log.info("达到目标，正在停止......");
+                    System.exit(-1); //TODO 为了停止生产者，可以改为轮询标志位
                 }
             } catch (InterruptedException e) {
                 log.error("当前线程被中断", e); //TODO
@@ -179,14 +179,17 @@ public class Spider {
     }
 
     private static Spider build() {
+
         return new Spider()
+                .setTargetTaskNumbers()
                 .setDownloader(new HttpClientPoolDownloader())
                 .setParser(new NewsParser())
                 .setSaver(new TextSaver())
 //                .setScheduler(new RedisScheduler())
-                .setScheduler(new PriorityQueueScheduler())
-                .setThreadPool()
-                .setTargetTaskNumbers();
+                .setScheduler(new PriorityQueueScheduler(targetTaskNumbers))
+                .setThreadPool();
+
+
     }
 
     /**
@@ -203,6 +206,7 @@ public class Spider {
         Spider.build()
                 .addUrlSeed(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm"))
                 .run();
+        log.error("目标任务数量：======================{}",targetTaskNumbers);
     }
 
 }
