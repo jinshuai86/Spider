@@ -1,4 +1,7 @@
 # Spider
+
+> 由于学校网络中心出问题了，第一个项目原来的域名暂时访问不了，然后自己新开了一个URL：[https://jinshuai86.github.io/EtrizDoc](https://jinshuai86.github.io/EtrizDoc)
+
 [![HitCount](http://hits.dwyl.io/jinshuai86/Spider.svg)](http://hits.dwyl.io/jinshuai86/Spider)
 
 Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认组件。用户也可以根据需要实现自己的组件  
