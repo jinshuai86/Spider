@@ -71,6 +71,12 @@ public class HttpUtils {
     private static final int CONNECT_TIMEOUT = 5000;
 
     private static DefaultMQProducer producer;
+    /**
+     * 消息队列开关
+     * 1-打开
+     * 0-关闭
+     * */
+    private static String mqSwitch;
 
     private static final String CHARSET = RemotingHelper.DEFAULT_CHARSET;
 
@@ -106,6 +112,7 @@ public class HttpUtils {
         producer = new DefaultMQProducer("Producer-Group");
         String ip = PropertiesUtils.getInstance().get("mq-ip");
         String port = PropertiesUtils.getInstance().get("mq-port");
+        mqSwitch = PropertiesUtils.getInstance().get("mq-switch");
         producer.setNamesrvAddr(ip + ":" + port);
         try {
             producer.start();
@@ -304,6 +311,10 @@ public class HttpUtils {
      * 发送消息
      * */
     private static void sendMessage(String url, String topic) {
+        // the switch of MQ is closed
+        if (mqSwitch == null || "0".equals(mqSwitch)) {
+            return;
+        }
         try {
             Message msg = new Message(topic, url.getBytes(CHARSET));
             producer.send(msg, new SendCallback() {
@@ -393,7 +404,6 @@ public class HttpUtils {
         @Override
         public void process(String url, HttpResponse response) {
             int status = response.getStatusLine().getStatusCode();
-
             if (status == 401 || status == 403) {
                 log.warn("401: 无权访问此资源[{}]", url);
                 // send to mq

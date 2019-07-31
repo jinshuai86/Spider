@@ -44,6 +44,8 @@ public class Consumer {
      */
     private ScheduledThreadPoolExecutor pool;
     private static final int CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
+    private static final int INITIAL_DELAY = 5;
+    private static final int PERIOD = 20;
 
     private static final String CHARSET = RemotingHelper.DEFAULT_CHARSET;
 
@@ -99,12 +101,15 @@ public class Consumer {
                     TimeUnit.SECONDS.sleep(1);
                 } else {
                     log.info("准备解析URL:[{}]，优先级(默认5):[{}]", urlSeed.getUrl(), urlSeed.getPriority());
-                    pool.scheduleAtFixedRate(new ConsumerWork(urlSeed),10, 20, TimeUnit.SECONDS);
+                    pool.scheduleAtFixedRate(new ConsumerWork(urlSeed),INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
                 }
             } catch (InterruptedException e) {
                 log.error("当前线程被中断", e);
             } catch (RejectedExecutionException e) {
                 log.error("拒绝此次提交的任务[{}]", urlSeed, e);
+            } catch (Exception e) {
+                log.error("线程池定时任务停止工作,重新启动线程池", e);
+                pool.scheduleAtFixedRate(new ConsumerWork(urlSeed),INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
             }
         }
     }

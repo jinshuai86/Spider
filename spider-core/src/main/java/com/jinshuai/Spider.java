@@ -206,7 +206,6 @@ public class Spider {
         Spider.build()
                 .addUrlSeed(new UrlSeed("http://xww.hebut.edu.cn/gdyw/index.htm"))
                 .run();
-        log.error("目标任务数量：======================{}",targetTaskNumbers);
     }
 
 }
