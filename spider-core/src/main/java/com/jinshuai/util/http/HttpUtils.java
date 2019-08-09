@@ -109,13 +109,18 @@ public class HttpUtils {
      * 配置消息队列
      * */
     private void configMQ() {
+        mqSwitch = PropertiesUtils.getInstance().get("mq-switch");
+        // the switch of MQ is closed
+        if (mqSwitch == null || "0".equals(mqSwitch)) {
+            return;
+        }
         producer = new DefaultMQProducer("Producer-Group");
         String ip = PropertiesUtils.getInstance().get("mq-ip");
         String port = PropertiesUtils.getInstance().get("mq-port");
-        mqSwitch = PropertiesUtils.getInstance().get("mq-switch");
         producer.setNamesrvAddr(ip + ":" + port);
         try {
             producer.start();
+            log.info("mq-producer started");
         } catch (MQClientException e) {
             log.error("failed to start producer", e);
         }
@@ -311,16 +316,12 @@ public class HttpUtils {
      * 发送消息
      * */
     private static void sendMessage(String url, String topic) {
-        // the switch of MQ is closed
-        if (mqSwitch == null || "0".equals(mqSwitch)) {
-            return;
-        }
         try {
             Message msg = new Message(topic, url.getBytes(CHARSET));
             producer.send(msg, new SendCallback() {
                 @Override
                 public void onSuccess(SendResult sendResult) {
-                    log.debug("发送成功[{}]", sendResult);
+                    log.info("msg send success [{}]", sendResult);
                 }
 
                 @Override
