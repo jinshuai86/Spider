@@ -32,6 +32,7 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.print.attribute.HashAttributeSet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -40,6 +41,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -219,20 +222,8 @@ public class HttpUtils {
             HttpResponse response = httpClient.execute(httpGet);
             // 根据状态码执行不同的操作
             int statusCode = response.getStatusLine().getStatusCode();
-            switch (statusCode / 100) {
-                case 2:
-                    executeStrategy(HttpUtils.SuccessStrategy.getInstance(), urlStr, response);
-                    break;
-                case 3:
-                    executeStrategy(HttpUtils.RedirectStrategy.getInstance(), urlStr, response);
-                    break;
-                case 4:
-                    executeStrategy(HttpUtils.ClientErrorStrategy.getInstance(), urlStr, response);
-                    break;
-                case 5:
-                    executeStrategy(HttpUtils.ServerErrorStrategy.getInstance(), urlStr, response);
-                    break;
-            }
+            StatusHandler strategy = StatusContext.getStrategy(statusCode);
+            strategy.process(urlStr, response);
         } catch (IOException e) {
             log.error("IO出错[{}]", urlStr, e);
         }
@@ -337,11 +328,23 @@ public class HttpUtils {
     }
 
     /**
-     * 执行具体的策略
-     *
+     * 策略上下文
      * */
-    private void executeStrategy(StatusHandler statusHandler, String url, HttpResponse response) {
-        statusHandler.process(url, response);
+    public static class StatusContext {
+
+        private static final Map<Integer, StatusHandler> status2Handler = new HashMap<>();
+
+        static {
+            status2Handler.put(2, SuccessStrategy.getInstance());
+            status2Handler.put(3, RedirectStrategy.getInstance());
+            status2Handler.put(4, ClientErrorStrategy.getInstance());
+            status2Handler.put(5, ServerErrorStrategy.getInstance());
+        }
+
+        static StatusHandler getStrategy(int statusCode) {
+            return status2Handler.get(statusCode / 100);
+        }
+
     }
 
     /**
