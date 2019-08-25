@@ -33,6 +33,8 @@ public class PropertiesUtils {
         return propertiesUtils;
     }
 
+    private PropertiesUtils(){}
+
     public String get(String key) {
         if (key == null)
             return null;

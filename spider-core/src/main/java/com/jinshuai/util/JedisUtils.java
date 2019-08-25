@@ -36,7 +36,7 @@ public class JedisUtils {
 
     private JedisPool jedisPool;
 
-    JedisUtils() {
+    private JedisUtils() {
         init();
     }
 

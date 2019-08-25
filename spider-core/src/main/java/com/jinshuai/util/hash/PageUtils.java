@@ -39,6 +39,8 @@ public class PageUtils {
         return instance;
     }
 
+    private PageUtils(){}
+
     private static final int BIT_SIZE = 64;
 
     private static final int TABLE_SIZE = 16;

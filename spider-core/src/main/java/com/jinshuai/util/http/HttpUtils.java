@@ -98,7 +98,7 @@ public class HttpUtils {
         return HTTPUTILS;
     }
 
-    HttpUtils() {
+    private HttpUtils() {
         init();
     }
 
@@ -438,7 +438,7 @@ public class HttpUtils {
             Header retryAfter = response.getFirstHeader("Retry-After");
             long waitSeconds = 20;
             if (retryAfter != null) {
-                waitSeconds = Long.valueOf(retryAfter.getValue());
+                waitSeconds = Long.parseLong(retryAfter.getValue());
             }
             log.info("由于远程服务器出错，爬虫休息 [{}] 秒后，尝试继续执行任务.....", waitSeconds);
             try {
