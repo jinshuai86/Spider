@@ -7,12 +7,12 @@ import com.jinshuai.entity.Page;
  * @author: JS
  * @date: 2018/3/27
  * @description:
- *  控制台简单打印
+ *  存放到数据库中
  */
-public class ConsoleSaver implements Saver {
+public class DataBaseSaver implements Saver {
 
     public void save(Page page) {
-        //TODO:... ...
+        //TODO
     }
 
 }
