@@ -1,9 +1,5 @@
 # Spider
 
-> 由于学校网络中心出问题了，第一个项目原来的域名暂时访问不了，然后新开了一个URL：[https://jinshuai86.github.io/EtrizDoc](https://jinshuai86.github.io/EtrizDoc)
-
-[![HitCount](http://hits.dwyl.io/jinshuai86/Spider.svg)](http://hits.dwyl.io/jinshuai86/Spider)
-
 Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认组件。用户也可以根据需要实现自己的组件  
 - 具体流程
   - 首先在调度器中添加初始种子，开启线程池。
@@ -25,7 +21,7 @@ Spider是一个基于Java的简易多线程爬虫框架，并且提供了默认�
 - 修改`application.properties`中存放解析内容的路径`dir`
 - 如果使用`Redis`作为种子调度器(默认使用优先队列)，需要修改`application.properties`中配置的`redis-ip`、`redis-port`和`redis-password`。如果你的Redis不需要密码验证，就不用修改文件里的`password`属性。
 - 如果使用消息队列(框架使用的是[RocketMQ](https://rocketmq.apache.org/))，需要修改`application.properties`中配置的`mq-ip`、`mq-port`。不用的话可以将`mq-switch`置为0，关闭消息队列。
-- 默认解析器解析的[河北工业大学新闻网](http://xww.hebut.edu.cn/gdyw/index.htm)中的新闻，如果解析其它类型的网页，需要重写`Parser.java`接口以及提供给种子调度器的初始种子
+- 默认解析器解析: 如果解析其它类型的网页，需要重写`Parser.java`接口以及提供给种子调度器的初始种子
 - 运行`Spider.java`
 ```Java
         Spider.build()
